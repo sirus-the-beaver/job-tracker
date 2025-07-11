@@ -17,23 +17,10 @@ import Signup from './components/Signup'
 
 function App() {
   return (
-    <Router>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Login</Link>
-          </li>
-          <li>
-            <Link to="/Signup">Sign Up</Link>
-          </li>
-        </ul>
-      </nav>
-      {/* Implementing Routes for respective Path */}
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/Signup" element={<Signup />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
-    </Router>
   );
 }
 
