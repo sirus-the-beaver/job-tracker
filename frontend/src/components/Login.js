@@ -45,7 +45,7 @@ const Login = () => {
                 <section>
                     <h1>You are logged in!</h1>
                     <button onClick={() =>
-                        navigate("/home")}>Go to Home</button>
+                        navigate("/")}>Go to Home</button>
                 </section>
             ) : (
         <section>
@@ -78,7 +78,7 @@ const Login = () => {
                 <span className="line">
                     {/*put router link here*/}
                     <button onClick={() =>
-                        navigate("/signup")}>Sign Up</button>
+                        navigate("/Signup")}>Sign Up</button>
                 </span>
             </p>
 

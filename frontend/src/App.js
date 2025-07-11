@@ -13,6 +13,7 @@ import {
   Link,
 } from "react-router-dom";
 import Login from './components/Login';
+import Signup from './components/Signup'
 
 function App() {
   return (
@@ -22,11 +23,15 @@ function App() {
           <li>
             <Link to="/">Login</Link>
           </li>
+          <li>
+            <Link to="/Signup">Sign Up</Link>
+          </li>
         </ul>
       </nav>
       {/* Implementing Routes for respective Path */}
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
       </Routes>
     </Router>
   );
