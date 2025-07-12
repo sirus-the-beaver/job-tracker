@@ -84,8 +84,8 @@ const Signup = () => {
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
             <h1>Sign Up</h1>
             <form onSubmit={handleSubmit}>
-                <label htmlFor="username">
-                    Username:
+                <label htmlFor="email">
+                    Email:
                     <span classNAme={validName ? "valid" : "hide"}>
                         <FontAwesomeIcon icon={faCheck} />
                     </span>
@@ -95,7 +95,7 @@ const Signup = () => {
                 </label>
                 <input
                     type="text"
-                    id="username"
+                    id="email"
                     ref={userRef}
                     autoComplete="off"
                     onChange={(e) => setUser(e.target.value)}
