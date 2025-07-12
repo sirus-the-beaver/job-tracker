@@ -8,6 +8,7 @@
 
 
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const userRef = useRef();
@@ -17,6 +18,8 @@ const Login = () => {
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
+
+    const navigate = useNavigate();
 
     // set focus on first input when component loads
     useEffect(() => {
@@ -41,10 +44,8 @@ const Login = () => {
             {success ? (
                 <section>
                     <h1>You are logged in!</h1>
-                    <br />
-                    <p>
-                        <a href="#">Go to Home</a>
-                    </p>
+                    <button onClick={() =>
+                        navigate("/")}>Go to Home</button>
                 </section>
             ) : (
         <section>
@@ -76,7 +77,8 @@ const Login = () => {
                 Need an Account?<br />
                 <span className="line">
                     {/*put router link here*/}
-                    <a href="#">Sign Up</a>
+                    <button onClick={() =>
+                        navigate("/Signup")}>Sign Up</button>
                 </span>
             </p>
 
