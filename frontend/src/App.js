@@ -18,7 +18,7 @@ import Signup from './components/Signup'
 function App() {
   return (
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
   );
