@@ -11,6 +11,8 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 
 const Login = () => {
     const userRef = useRef();
@@ -118,9 +120,9 @@ const Login = () => {
                                 <button
                                     type="button"
                                     onClick={togglePasswordVisibility}
-                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                                    className="absolute inset-y-0 right-0 flex items-center"
                                 >
-                                    <FontAwesomeIcon icon={showPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']} />
+                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="text-lg" />
                                 </button>
                             </div>
                         </div>
@@ -138,7 +140,7 @@ const Login = () => {
                         <p className="text-sm text-gray-600">
                             Need an account? <button 
                                 onClick={() => navigate("/Signup")}
-                                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                className="inline-flex items-center text-white-600 hover:text-blue-800 font-medium transition-colors"
                             >
                                 <FontAwesomeIcon icon={faUserPlus} className="mr-1" /> Sign Up
                             </button>
