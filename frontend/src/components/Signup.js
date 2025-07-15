@@ -1,3 +1,12 @@
+// Citation for the following:
+// Date: 07/11/2025
+// Based on:
+// Source: YouTube
+// Author(s): Dave Gray
+// YouTube tutorial video: React JS Form Validation | Axios User Registration Form Submit | Beginners to Intermediate
+// YouTube URL: https://www.youtube.com/watch?v=brcHK3P6ChQ (00:00 - 30:38)
+
+
 import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle, faArrowRight, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
