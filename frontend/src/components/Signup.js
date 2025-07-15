@@ -3,7 +3,7 @@ import { faCheck, faTimes, faInfoCircle, faArrowRight, faUser } from "@fortaweso
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from 'react-router-dom';
 
-const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
+const USER_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const Signup = () => {
@@ -239,7 +239,7 @@ const Signup = () => {
                             Already signed up? 
                             <button 
                                 onClick={() => navigate("/Login")}
-                                className="ml-1 text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                className="ml-1 text-White-600 hover:text-blue-800 font-medium transition-colors"
                             >
                                 Log In
                             </button>
