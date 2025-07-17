@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from '../contexts/AuthContext';
 
 
 const Login = () => {
@@ -25,6 +26,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+    const auth = useAuth();
 
     useEffect(() => {
         userRef.current.focus();
@@ -36,10 +38,10 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(user, pwd);
         setUser('');
         setPwd('');
         setSuccess(true);
+        auth.login({ email: user, password: pwd })
     };
 
     const togglePasswordVisibility = () => {

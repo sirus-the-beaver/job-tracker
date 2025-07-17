@@ -17,6 +17,7 @@ const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const login = async(data) => {
         try {
+            // Replace '' with backend endpoint for login
             const req = await axios.post('', data);
             const res = await req.data;
             if (res.data) {
