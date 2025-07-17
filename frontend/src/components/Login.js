@@ -10,8 +10,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faLock, faUserPlus, faCircleExclamation, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../contexts/AuthContext';
 
 
@@ -61,7 +60,7 @@ const Login = () => {
                     className={`${errMsg ? 'block' : 'hidden'} mb-4 px-4 py-3 bg-red-50 text-red-700 rounded-lg border border-red-200`}
                     aria-live="assertive"
                 >
-                    <FontAwesomeIcon icon='fa-solid fa-circle-exclamation' className="mr-2" />
+                    <FontAwesomeIcon icon={faCircleExclamation} className="mr-2" />
                     {errMsg}
                 </p>
                 
@@ -116,7 +115,6 @@ const Login = () => {
                         className="w-full py-3 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 flex items-center justify-center"
                     >
                         <span>Sign In</span>
-                        <FontAwesomeIcon icon='fa-solid fa-exclamation' className="ml-2" />
                     </button>
                 </form>
                 
