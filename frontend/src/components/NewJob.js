@@ -28,7 +28,7 @@ const NewJob = () => {
             return;
         }
 
-        if (!validateInput(positionTitle) || !validateInput(company) || !validateInput(location) || !validateInput(pay) || !validateInput(notes)) {
+        if (!validateInput(positionTitle) || !validateInput(company) || !validateInput(location) || !validateInput(notes)) {
             setError('Invalid characters in input fields. Please use alphanumeric characters only.');
             return;
         }
@@ -141,9 +141,9 @@ const NewJob = () => {
                     </div>
 
                     <div>
-                        <label htmlFor="pay">Pay</label>
+                        <label htmlFor="pay">Pay (dollars/year)</label>
                         <input 
-                            type="text" 
+                            type="number" 
                             id="pay" 
                             value={pay} 
                             onChange={(e) => setPay(e.target.value)} 
