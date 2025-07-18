@@ -18,7 +18,7 @@ const NewJob = () => {
 
     const validateInput = (input) => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;
-        return regex.test(input);
+        return regex.test(input) || input === '';
     }
 
     const handleSubmit = (e) => {
