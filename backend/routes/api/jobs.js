@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Define a route
 router.get('/', (req, res) => {
-    res.send('this is jobs route');// this gets executed when user visit http://localhost:3000/jobs
+    res.send('this is jobs route');
 });
 
 // export the router module so that other files can use it
