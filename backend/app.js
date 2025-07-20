@@ -1,6 +1,7 @@
 // Express
 const express = require('express');
 const dotenv = require('dotenv');
+const jobsRoute = require('./routes/api/jobsRoutes');
 const app = express();
 dotenv.config()
 app.use(express.json());
@@ -12,9 +13,6 @@ const PORT = 30239;
 
 // Database
 const db = require('./database/db-connector');
-
-// Include route files
-const jobsRoute = require('./routes/api/jobs');
 
 
 // ########################################
