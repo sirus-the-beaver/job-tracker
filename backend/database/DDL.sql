@@ -21,25 +21,27 @@ BEGIN
     DROP TABLE IF EXISTS users;
 
     CREATE TABLE users (
-        user_id INT(11) NOT NULL AUTO_INCREMENT,
-        username VARCHAR(45) NOT NULL,
-        email VARCHAR(45) NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
+        user_id INT(11) NOT NULL AUTO_INCREMENT,UNIQUE
+        email VARCHAR(45) NOT NULL,UNIQUE
+        password_hash VARCHAR(60) NOT NULL,
         PRIMARY KEY (user_id),
-        UNIQUE KEY email_UNIQUE (email)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
     CREATE TABLE jobs (
         job_id INT(11) NOT NULL AUTO_INCREMENT,
         user_id INT(11) NOT NULL,
-        title VARCHAR(100) NOT NULL,
+        positionTitle VARCHAR(100) NOT NULL,
         company VARCHAR(100) NOT NULL,
-        location VARCHAR(100) DEFAULT NULL,
+        city VARCHAR(100) DEFAULT NULL,
+        state VARCHAR(100) DEFAULT NULL,
         status ENUM('applied', 'interviewing', 'offer', 'rejected', 'interested') NOT NULL DEFAULT 'applied',
         salary_min DECIMAL(10, 2) DEFAULT NULL,
         salary_max DECIMAL(10, 2) DEFAULT NULL,
         application_date DATE DEFAULT NULL,
-        notes TEXT,
+        notes TEXT, DEFAULT NULL,
+        classification ENUM('Job', 'Internship') NOT NULL DEFAULT 'Job', 
+        tier ENUM('Dream Position', 'Good Fit', 'Backup') DEFAULT NULL, 
+        link VARCHAR(255) DEFAULT NULL, 
         PRIMARY KEY (job_id),
         KEY fk_jobs_users_idx (user_id),
         CONSTRAINT fk_jobs_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
