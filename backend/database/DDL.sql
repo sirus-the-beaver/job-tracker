@@ -21,10 +21,10 @@ BEGIN
     DROP TABLE IF EXISTS users;
 
     CREATE TABLE users (
-        user_id INT(11) NOT NULL AUTO_INCREMENT,UNIQUE
-        email VARCHAR(45) NOT NULL,UNIQUE
+        user_id INT(11) NOT NULL AUTO_INCREMENT,
+        email VARCHAR(45) NOT NULL UNIQUE,
         password_hash VARCHAR(60) NOT NULL,
-        PRIMARY KEY (user_id),
+        PRIMARY KEY (user_id)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
     CREATE TABLE jobs (
