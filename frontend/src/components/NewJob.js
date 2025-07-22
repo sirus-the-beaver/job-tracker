@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const NewJob = () => {
-    const [classification, setClassification] = useState(['Job', 'Internship'])
+    const classifications = ['Job', 'Internship'];
+    const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
+    const tiers = ['Dream Position', 'Good Fit', 'Backup'];
+
+    const [classification, setClassification] = useState(classifications[0]);
     const [positionTitle, setPositionTitle] = useState('');
     const [company, setCompany] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-    const [status, setStatus] = useState(['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected']);
-    const [tier, setTier] = useState(['Dream Position', 'Good Fit', 'Backup']);
-    const [pay, setPay] = useState('');
-    const [dateApplied, setDateApplied] = useState(new Date());
+    const [status, setStatus] = useState(statuses[0]);
+    const [tier, setTier] = useState(tiers[0]);
+    const [salaryMin, setSalaryMin] = useState('');
+    const [salaryMax, setSalaryMax] = useState('');
+    const [dateApplied, setDateApplied] = useState(null);
     const [link, setLink] = useState('');
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
@@ -39,20 +44,30 @@ const NewJob = () => {
     };
 
     const handleReset = () => {
+        setClassification(classifications[0]);
         setPositionTitle('');
         setCompany('');
         setCity('');
         setState('');
-        setPay('');
+        setStatus(statuses[0]);
+        setTier(tiers[0]);
+        setSalaryMin('');
+        setSalaryMax('');
         setLink('');
         setNotes('');
-        setDateApplied(new Date());
+        setDateApplied(null);
         setError('');
     };
 
     const handleCancel = () => {
         navigate('/');
     };
+
+    useEffect(() => {
+        if (status !== 'Interested') {
+            setDateApplied(new Date().toISOString().split('T')[0]);
+        }
+    }, [status]);
 
     return (
         <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10'>
@@ -168,26 +183,40 @@ const NewJob = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="pay" className='block text-sm font-medium text-gray-700'>Pay (USD/year)</label>
+                            <label htmlFor="salaryMin" className='block text-sm font-medium text-gray-700'>Minimum Salary (USD/year)</label>
                             <input 
                                 type="number" 
-                                id="pay" 
-                                value={pay} 
-                                onChange={(e) => setPay(e.target.value)}
+                                id="salaryMin" 
+                                value={salaryMin} 
+                                onChange={(e) => setSalaryMin(e.target.value)}
                                 className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="dateApplied" className='block text-sm font-medium text-gray-700'>Date Applied</label>
+                            <label htmlFor="salaryMax" className='block text-sm font-medium text-gray-700'>Maximum Salary (USD/year)</label>
                             <input 
-                                type="date" 
-                                id="dateApplied" 
-                                value={dateApplied.toISOString().split('T')[0]} 
-                                onChange={(e) => setDateApplied(new Date(e.target.value))}
+                                type="number" 
+                                id="salaryMax" 
+                                value={salaryMax} 
+                                onChange={(e) => setSalaryMax(e.target.value)}
                                 className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             />
                         </div>
+
+                        {status !== 'Interested' && 
+                        (
+                            <div>
+                                <label htmlFor="dateApplied" className='block text-sm font-medium text-gray-700'>Date Applied</label>
+                                <input 
+                                    type="date" 
+                                    id="dateApplied" 
+                                    value={dateApplied ? dateApplied : new Date().toISOString().split('T')[0]} 
+                                    onChange={(e) => setDateApplied(new Date(e.target.value).toISOString().split('T')[0])}
+                                    className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
+                                />
+                            </div>
+                        )}
 
                         <div>
                             <label htmlFor="link" className='block text-sm font-medium text-gray-700'>Link</label>
