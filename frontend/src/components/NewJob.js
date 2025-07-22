@@ -147,7 +147,7 @@ const NewJob = () => {
                             <input 
                                 type="text" 
                                 id="state" 
-                                value={city} 
+                                value={state} 
                                 onChange={(e) => setState(e.target.value)}
                                 className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             />
