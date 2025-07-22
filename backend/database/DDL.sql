@@ -1,15 +1,6 @@
--- # Job Tracker Database Schema
--- This SQL script (`ddl.sql`) defines the database schema for the Job Tracker application. 
--- It sets up tables to manage users, jobs, skills, contacts, and their relationships.
--- Portions of this SQL schema creation and modification were assisted by ChatGPT. 
--- The AI helped with syntax correction, schema design alignment with application functionality, 
--- and ensuring proper database constraints.
-
-DROP PROCEDURE IF EXISTS sp_load_job_tracker;
-
-BEGIN
     SET FOREIGN_KEY_CHECKS = 0;
 
+    -- Drop tables in reverse order of dependencies
     DROP TABLE IF EXISTS users_skills;
     DROP TABLE IF EXISTS jobs_skills;
     DROP TABLE IF EXISTS jobs_contacts;
@@ -18,6 +9,7 @@ BEGIN
     DROP TABLE IF EXISTS contacts;
     DROP TABLE IF EXISTS users;
 
+    -- Create users table
     CREATE TABLE users (
         user_id INT(11) NOT NULL AUTO_INCREMENT,
         email VARCHAR(45) NOT NULL UNIQUE,
@@ -25,6 +17,7 @@ BEGIN
         PRIMARY KEY (user_id)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+    -- Create jobs table
     CREATE TABLE jobs (
         job_id INT(11) NOT NULL AUTO_INCREMENT,
         user_id INT(11) NOT NULL,
@@ -37,14 +30,19 @@ BEGIN
         salary_max DECIMAL(10, 2) DEFAULT NULL,
         application_date DATE DEFAULT NULL,
         notes TEXT DEFAULT NULL,
-        classification ENUM('Job', 'Internship') NOT NULL DEFAULT 'Job', 
-        tier ENUM('Dream Position', 'Good Fit', 'Backup') DEFAULT NULL, 
-        link VARCHAR(255) DEFAULT NULL, 
+        classification ENUM('Job', 'Internship') NOT NULL DEFAULT 'Job',
+        tier ENUM('Dream Position', 'Good Fit', 'Backup') DEFAULT NULL,
+        link VARCHAR(255) DEFAULT NULL,
         PRIMARY KEY (job_id),
         KEY fk_jobs_users_idx (user_id),
-        CONSTRAINT fk_jobs_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT fk_jobs_users 
+            FOREIGN KEY (user_id) 
+            REFERENCES users (user_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+    -- Create skills table
     CREATE TABLE skills (
         skill_id INT(11) NOT NULL AUTO_INCREMENT,
         user_id INT(11) NOT NULL,
@@ -52,9 +50,14 @@ BEGIN
         description TEXT,
         PRIMARY KEY (skill_id),
         KEY fk_skills_users_idx (user_id),
-        CONSTRAINT fk_skills_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT fk_skills_users 
+            FOREIGN KEY (user_id) 
+            REFERENCES users (user_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+    -- Create contacts table
     CREATE TABLE contacts (
         contact_id INT(11) NOT NULL AUTO_INCREMENT,
         user_id INT(11) NOT NULL,
@@ -67,27 +70,50 @@ BEGIN
         notes TEXT,
         PRIMARY KEY (contact_id),
         KEY fk_contacts_users_idx (user_id),
-        CONSTRAINT fk_contacts_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT fk_contacts_users 
+            FOREIGN KEY (user_id) 
+            REFERENCES users (user_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+    -- Create jobs_skills junction table
     CREATE TABLE jobs_skills (
         job_id INT(11) NOT NULL,
         skill_id INT(11) NOT NULL,
         proficiency_required ENUM('beginner', 'intermediate', 'advanced') DEFAULT NULL,
         PRIMARY KEY (job_id, skill_id),
-        CONSTRAINT fk_jobs_skills_job FOREIGN KEY (job_id) REFERENCES jobs (job_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        CONSTRAINT fk_jobs_skills_skill FOREIGN KEY (skill_id) REFERENCES skills (skill_id) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT fk_jobs_skills_job 
+            FOREIGN KEY (job_id) 
+            REFERENCES jobs (job_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE,
+        CONSTRAINT fk_jobs_skills_skill 
+            FOREIGN KEY (skill_id) 
+            REFERENCES skills (skill_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+    -- Create jobs_contacts junction table
     CREATE TABLE jobs_contacts (
         job_id INT(11) NOT NULL,
         contact_id INT(11) NOT NULL,
         relationship_type ENUM('recruiter', 'hiring_manager', 'interviewer', 'network') DEFAULT NULL,
         PRIMARY KEY (job_id, contact_id),
-        CONSTRAINT fk_jobs_contacts_job FOREIGN KEY (job_id) REFERENCES jobs (job_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        CONSTRAINT fk_jobs_contacts_contact FOREIGN KEY (contact_id) REFERENCES contacts (contact_id) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT fk_jobs_contacts_job 
+            FOREIGN KEY (job_id) 
+            REFERENCES jobs (job_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE,
+        CONSTRAINT fk_jobs_contacts_contact 
+            FOREIGN KEY (contact_id) 
+            REFERENCES contacts (contact_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+    -- Create users_skills junction table
     CREATE TABLE users_skills (
         user_id INT(11) NOT NULL,
         skill_id INT(11) NOT NULL,
@@ -95,13 +121,16 @@ BEGIN
         confidence_score TINYINT(3) UNSIGNED DEFAULT NULL COMMENT '1-10 rating',
         last_practiced DATE DEFAULT NULL,
         PRIMARY KEY (user_id, skill_id),
-        CONSTRAINT fk_users_skills_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-        CONSTRAINT fk_users_skills_skill FOREIGN KEY (skill_id) REFERENCES skills (skill_id) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT fk_users_skills_user 
+            FOREIGN KEY (user_id) 
+            REFERENCES users (user_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE,
+        CONSTRAINT fk_users_skills_skill 
+            FOREIGN KEY (skill_id) 
+            REFERENCES skills (skill_id) 
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
     SET FOREIGN_KEY_CHECKS = 1;
-END$$
-
-DELIMITER ;
-
-CALL sp_load_job_tracker();
