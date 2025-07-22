@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const NewJob = () => {
@@ -15,7 +15,7 @@ const NewJob = () => {
     const [tier, setTier] = useState(tiers[0]);
     const [salaryMin, setSalaryMin] = useState('');
     const [salaryMax, setSalaryMax] = useState('');
-    const [dateApplied, setDateApplied] = useState(new Date());
+    const [dateApplied, setDateApplied] = useState(null);
     const [link, setLink] = useState('');
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
@@ -55,13 +55,19 @@ const NewJob = () => {
         setSalaryMax('');
         setLink('');
         setNotes('');
-        setDateApplied(new Date());
+        setDateApplied(null);
         setError('');
     };
 
     const handleCancel = () => {
         navigate('/');
     };
+
+    useEffect(() => {
+        if (status !== 'Interested') {
+            setDateApplied(new Date().toISOString().split('T')[0]);
+        }
+    }, [status]);
 
     return (
         <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10'>
@@ -198,14 +204,15 @@ const NewJob = () => {
                             />
                         </div>
 
-                        {status != 'Interested' && (
+                        {status !== 'Interested' && 
+                        (
                             <div>
                                 <label htmlFor="dateApplied" className='block text-sm font-medium text-gray-700'>Date Applied</label>
                                 <input 
                                     type="date" 
                                     id="dateApplied" 
-                                    value={dateApplied.toISOString().split('T')[0]} 
-                                    onChange={(e) => setDateApplied(new Date(e.target.value))}
+                                    value={dateApplied ? dateApplied : new Date().toISOString().split('T')[0]} 
+                                    onChange={(e) => setDateApplied(new Date(e.target.value).toISOString().split('T')[0])}
                                     className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                                 />
                             </div>
