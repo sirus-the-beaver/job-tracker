@@ -6,9 +6,7 @@
 -- and ensuring proper database constraints.
 
 DROP PROCEDURE IF EXISTS sp_load_job_tracker;
-DELIMITER $$
 
-CREATE PROCEDURE sp_load_job_tracker()
 BEGIN
     SET FOREIGN_KEY_CHECKS = 0;
 
@@ -38,7 +36,7 @@ BEGIN
         salary_min DECIMAL(10, 2) DEFAULT NULL,
         salary_max DECIMAL(10, 2) DEFAULT NULL,
         application_date DATE DEFAULT NULL,
-        notes TEXT, DEFAULT NULL,
+        notes TEXT DEFAULT NULL,
         classification ENUM('Job', 'Internship') NOT NULL DEFAULT 'Job', 
         tier ENUM('Dream Position', 'Good Fit', 'Backup') DEFAULT NULL, 
         link VARCHAR(255) DEFAULT NULL, 
