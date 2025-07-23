@@ -14,31 +14,66 @@ const db = require('../../database/db-connector.js');
 
 // GET a specific resource (e.g., get all of the jobs a user has applied to)
 // GET route should basically return all of the jobs that a user has applied to
-router.get('/', (req, res) => {
-    const sql = 'SELECT * FROM jobs';
-
-    db.query(sql, (err, result) => {
-        if(err) throw err;
-        res.send(result);
-    });
+router.get('/', async (req, res) => {
+    try {
+        const [jobs] = await db.query('SELECT * FROM jobs');
+        res.render('jobs', { jobs });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Query error');
+    }
 });
 
 // POST: create a new resource (e.g., add a new job to the database)
 // POST route should receive data payload from frontend and store in DB
-router.post('/', (req, res) => {
-    res.send('Got a POST request')
+router.post('/', async (req, res) => {
+    const { user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
+    try {
+        await db.query('CALL sp_createJob(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+            user_id,
+            positionTitle,
+            company,
+            city,
+            state,
+            status,
+            salary_min,
+            salary_max,
+            application_date,
+            notes,
+            classification,
+            tier,
+            link,
+        ]);
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Insert failed');
+    }
 })
 // PUT: update an existing resource (or create a new one if it doesn't exist)
 // PUT route should receive data payload and update DB for that job ID
 
-router.put('/', (req, res) => {
-    res.send('Got a PUT request at /')
+router.put('/', async (req, res) => {
+    const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
+    try {
+        await db.query('UPDATE jobs SET job_id = ?, positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE user_id = ?');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Update failed');
+    }
 })
 
 // DELETE the specificed resource
 // DELETE route should delete row from DB for that job ID
-router.delete('/', (req, res) => {
-    res.send('Got a DELETE request at /')
+router.delete('/', async (req, res) => {
+    const { job_id } = req.body;
+    try {
+        await db.query('DELETE FROM jobs WHERE job_id', [job_id]);
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Delete failed');
+    }
 })
 
 // export the router module so that other files can use it
