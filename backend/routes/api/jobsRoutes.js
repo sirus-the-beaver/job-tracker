@@ -7,6 +7,7 @@
 // routes/jobs.js
 const express = require('express');
 const router = express.Router();
+const db = require('../../database/db-connector.js');
 
 // a language of verbs (such as GET, POST, PUT, & DELETE) describe what should happen
 
@@ -14,7 +15,12 @@ const router = express.Router();
 // GET a specific resource (e.g., get all of the jobs a user has applied to)
 // GET route should basically return all of the jobs that a user has applied to
 router.get('/', (req, res) => {
-    res.send('this is jobs route');
+    const sql = 'SELECT * FROM jobs';
+
+    db.query(sql, (err, result) => {
+        if(err) throw err;
+        res.send(result);
+    });
 });
 
 // POST: create a new resource (e.g., add a new job to the database)
