@@ -9,7 +9,7 @@ router.post('/register', async (req, res) => {
     try {
         // Check if an account is already registered with the email
         const existingUser = await db.query('SELECT * FROM users where email = ?', [email]);
-        if (existingUser.length > 0) {
+        if (existingUser[0].length > 0) {
             return res.status(400).json({ message: 'An account with this email already exists.' });
         }
 
@@ -30,11 +30,11 @@ router.post('/login', async (req, res) => {
     try {
         // Retrieve user from database
         const user = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-        if (user.length === 0) {
+        if (user[0].length === 0) {
             return res.status(400).json({ message: 'Invalid email or password.' });
         }
-
-        const userData = user[0];
+        
+        const userData = user[0][0];
         // Compare the provided password with the stored hashed password
         const isPasswordValid = await bcrypt.compare(password, userData.password_hash);
         if (!isPasswordValid) {

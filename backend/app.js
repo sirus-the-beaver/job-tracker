@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const jobsRoute = require('./routes/api/jobsRoutes');
 const userRoutes = require('./routes/api/userRoutes');
+const authMiddleware = require('./middlewares/authMiddleware');
 
 const app = express();
 dotenv.config()
