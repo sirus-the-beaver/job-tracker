@@ -15,8 +15,9 @@ const db = require('../../database/db-connector.js');
 // GET a specific resource (e.g., get all of the jobs a user has applied to)
 // GET route should basically return all of the jobs that a user has applied to
 router.get('/', async (req, res) => {
+    const { user_id } = req.body;
     try {
-        const [jobs] = await db.query('SELECT * FROM jobs');
+        await db.query('SELECT FROM jobs WHERE user_id', [user_id]);
         res.send('jobs', { jobs });
     } catch (err) {
         console.error(err);
