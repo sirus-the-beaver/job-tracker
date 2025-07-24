@@ -17,7 +17,7 @@ const db = require('../../database/db-connector.js');
 router.get('/', async (req, res) => {
     try {
         const [jobs] = await db.query('SELECT * FROM jobs');
-        res.render('jobs', { jobs });
+        res.send('jobs', { jobs });
     } catch (err) {
         console.error(err);
         res.status(500).send('Query error');
@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
-        await db.query('CALL sp_createJob(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        await db.query('INSERT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             user_id,
             positionTitle,
             company,
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
             tier,
             link,
         ]);
-        res.redirect('/');
+        res.status(201).send('Insert succeeded');
     } catch (err) {
         console.error(err);
         res.status(500).send('Insert failed');
@@ -57,6 +57,7 @@ router.put('/', async (req, res) => {
     const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
         await db.query('UPDATE jobs SET job_id = ?, positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE user_id = ?');
+        res.status(204).send('Update succeeded');
     } catch (err) {
         console.error(err);
         res.status(500).send('Update failed');
@@ -69,7 +70,7 @@ router.delete('/', async (req, res) => {
     const { job_id } = req.body;
     try {
         await db.query('DELETE FROM jobs WHERE job_id', [job_id]);
-        res.redirect('/');
+        res.send(204).send('Delete succeeded');
     } catch (err) {
         console.error(err);
         res.status(500).send('Delete failed');
