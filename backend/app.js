@@ -2,18 +2,20 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const jobsRoute = require('./routes/api/jobsRoutes');
+const userRoutes = require('./routes/api/userRoutes');
+
 const app = express();
+const PORT = process.env.PORT;
 dotenv.config()
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/jobs', jobsRoute);
-
-const PORT = process.env.PORT
+app.use('/user', userRoutes);
 
 // Database
 const db = require('./database/db-connector');
-
 
 // ########################################
 // ########## LISTENER
