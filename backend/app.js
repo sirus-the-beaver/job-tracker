@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/jobs', jobsRoute);
 
-const PORT = 30239;
+const PORT = process.env.PORT
 
 // Database
 const db = require('./database/db-connector');
