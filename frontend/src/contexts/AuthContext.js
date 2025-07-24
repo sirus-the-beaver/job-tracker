@@ -17,8 +17,11 @@ const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const login = async(data) => {
         try {
-            // Replace '' with backend endpoint for login
-            const req = await axios.post('', data);
+            const req = await axios.post(`http://localhost:${process.env.REACT_APP_PORT}/user/login`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             const res = await req.data;
             if (res.data) {
                 setUser(res.data.user);
