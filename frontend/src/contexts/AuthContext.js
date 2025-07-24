@@ -11,39 +11,34 @@ const AuthContext = createContext();
 
 // This component provides the authentication context to its children
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token') || '');
 
     const navigate = useNavigate();
     const login = async(data) => {
         try {
-            const req = await axios.post(`http://localhost:${process.env.REACT_APP_PORT}/user/login`, data, {
+            const req = await axios.post('http://localhost:5016/user/login', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
             const res = await req.data;
-            if (res.data) {
-                setUser(res.data.user);
-                setToken(res.data.token);
-                localStorage.setItem('token', res.data.token);
+            if (res.token) {
+                setToken(res.token);
+                localStorage.setItem('token', res.token);
                 navigate('/');
                 return;
             }
-            throw new Error('Login failed');
         } catch (error) {
             console.error('Login error:', error);
-            throw new Error('Login failed');
         }
     };
     const logout = () => {
-        setUser(null);
         setToken('');
         localStorage.removeItem('token');
         navigate('/login');
     }
     return ( 
-        <AuthContext.Provider value={{ token, user, login, logout }}>
+        <AuthContext.Provider value={{ token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

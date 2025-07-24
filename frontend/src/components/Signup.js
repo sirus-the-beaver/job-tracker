@@ -59,11 +59,10 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`http://localhost:${process.env.REACT_APP_PORT}/user/register`, 
-                JSON.stringify({ email: user, password: pwd }), 
+            const response = await axios.post('http://localhost:5008/user/register',
+                { email: user, password: pwd }, 
                 {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
+                    headers: { 'Content-Type': 'application/json' }
                 }
             );
             setSuccess(true);
