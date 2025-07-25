@@ -11,6 +11,7 @@ import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle, faArrowRight, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const USER_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -57,8 +58,28 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(user, pwd);
-        setSuccess(true);
+        try {
+            const response = await axios.post('http://localhost:5008/user/register',
+                { email: user, password: pwd }, 
+                {
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+            setSuccess(true);
+            setUser('');
+            setPwd('');
+            setMatchPwd('');
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('No Server Response');
+                console.log(err);
+            } else if (err.response?.status === 400) {
+                setErrMsg('Email already exists');
+            } else {
+                setErrMsg('Registration Failed');
+            }
+            errRef.current.focus();
+        }
     }
 
     return (
