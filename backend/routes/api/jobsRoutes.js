@@ -15,12 +15,12 @@ const db = require('../../database/db-connector.js');
 // GET a specific resource (e.g., get all of the jobs a user has applied to)
 // GET route should basically return all of the jobs that a user has applied to
 router.get('/', async (req, res) => {
-    const { user_id } = req.body;
+    const { user_id }  = req.params;
     try {
-        const [jobs] = await db.query('SELECT * FROM jobs WHERE user_id', [user_id]);
+        const [jobs] = await db.query('SELECT * FROM jobs WHERE user_id = ?', [user_id]);
         res.send({ jobs });
     } catch (err) {
-        console.error(err);
+        console.error('Error getting jobs:', err);
         res.status(500).send('Query error');
     }
 });
@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
         ]);
         res.status(201).send('Insert succeeded');
     } catch (err) {
-        console.error(err);
+        console.error('Error while adding a new job:', err);
         res.status(500).send('Insert failed');
     }
 })
@@ -73,7 +73,7 @@ router.put('/', async (req, res) => {
         ]);
         res.status(204).send('Update succeeded');
     } catch (err) {
-        console.error(err);
+        console.error('Error while updating a preexisting job:', err);
         res.status(500).send('Update failed');
     }
 })
@@ -86,7 +86,7 @@ router.delete('/', async (req, res) => {
         await db.query('DELETE FROM jobs WHERE job_id', [job_id]);
         res.send(204).send('Delete succeeded');
     } catch (err) {
-        console.error(err);
+        console.error('Error while deleting job:', err);
         res.status(500).send('Delete failed');
     }
 })
