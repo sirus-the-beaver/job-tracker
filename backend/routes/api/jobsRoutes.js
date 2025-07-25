@@ -17,8 +17,8 @@ const db = require('../../database/db-connector.js');
 router.get('/', async (req, res) => {
     const { user_id } = req.body;
     try {
-        await db.query('SELECT FROM jobs WHERE user_id', [user_id]);
-        res.send('jobs', { jobs });
+        const [jobs] = await db.query('SELECT * FROM jobs WHERE user_id', [user_id]);
+        res.send({ jobs });
     } catch (err) {
         console.error(err);
         res.status(500).send('Query error');
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
-        await db.query('INSERT(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        await db.query('INSERT INTO jobs (user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             user_id,
             positionTitle,
             company,
@@ -53,11 +53,24 @@ router.post('/', async (req, res) => {
 })
 // PUT: update an existing resource (or create a new one if it doesn't exist)
 // PUT route should receive data payload and update DB for that job ID
-
 router.put('/', async (req, res) => {
     const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
-        await db.query('UPDATE jobs SET job_id = ?, positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE user_id = ?');
+        await db.query('UPDATE jobs SET job_id = ?, positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE user_id = ?',  [
+            job_id,
+            positionTitle,
+            company,
+            city,
+            state,
+            status,
+            salary_min,
+            salary_max,
+            application_date,
+            notes,
+            classification,
+            tier,
+            link,
+        ]);
         res.status(204).send('Update succeeded');
     } catch (err) {
         console.error(err);
