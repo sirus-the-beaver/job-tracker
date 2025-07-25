@@ -15,10 +15,10 @@ const db = require('../../database/db-connector.js');
 // GET a specific resource (e.g., get all of the jobs a user has applied to)
 // GET route should basically return all of the jobs that a user has applied to
 router.get('/', async (req, res) => {
-    const { user_id }  = req.params;
+    const { user_id }  = req.user.user_id;
     try {
-        const [jobs] = await db.query('SELECT * FROM jobs WHERE user_id = ?', [user_id]);
-        res.send({ jobs });
+        const jobs = await db.query('SELECT * FROM jobs WHERE user_id = ?', [user_id]);
+        res.send(jobs[0]);
     } catch (err) {
         console.error('Error getting jobs:', err);
         res.status(500).send('Query error');
@@ -28,7 +28,8 @@ router.get('/', async (req, res) => {
 // POST: create a new resource (e.g., add a new job to the database)
 // POST route should receive data payload from frontend and store in DB
 router.post('/', async (req, res) => {
-    const { user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
+    const user_id = req.user.user_id;
+    const { positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
         await db.query('INSERT INTO jobs (user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             user_id,
@@ -54,6 +55,7 @@ router.post('/', async (req, res) => {
 // PUT: update an existing resource (or create a new one if it doesn't exist)
 // PUT route should receive data payload and update DB for that job ID
 router.put('/', async (req, res) => {
+    const user_id = req.user.user_id;
     const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
         await db.query('UPDATE jobs SET job_id = ?, positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE user_id = ?',  [
@@ -70,6 +72,7 @@ router.put('/', async (req, res) => {
             classification,
             tier,
             link,
+            user_id,
         ]);
         res.status(204).send('Update succeeded');
     } catch (err) {
