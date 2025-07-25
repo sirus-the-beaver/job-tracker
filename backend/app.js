@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const jobsRoute = require('./routes/api/jobsRoutes');
 const userRoutes = require('./routes/api/userRoutes');
+const skillsRoutes = require('./routes/api/skillsRoutes');
 const authMiddleware = require('./middlewares/authMiddleware');
 
 const app = express();
@@ -15,8 +16,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use('/jobs', jobsRoute);
 app.use('/user', userRoutes);
+app.use('/jobs', jobsRoute);
+app.use('/skills', skillsRoutes);
 
 // Database
 const db = require('./database/db-connector');
