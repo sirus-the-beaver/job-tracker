@@ -15,7 +15,7 @@ const db = require('../../database/db-connector.js');
 // GET a specific resource (e.g., get all of the jobs a user has applied to)
 // GET route should basically return all of the jobs that a user has applied to
 router.get('/', async (req, res) => {
-    const { user_id }  = req.user.user_id;
+    const user_id = req.user.user_id;
     try {
         const jobs = await db.query('SELECT * FROM jobs WHERE user_id = ?', [user_id]);
         res.send(jobs[0]);
@@ -58,7 +58,7 @@ router.put('/', async (req, res) => {
     const user_id = req.user.user_id;
     const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
-        await db.query('UPDATE jobs SET job_id = ?, positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE user_id = ?',  [
+        await db.query('UPDATE jobs SET positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE job_id = ? AND user_id = ?',  [
             job_id,
             positionTitle,
             company,
@@ -86,7 +86,7 @@ router.put('/', async (req, res) => {
 router.delete('/', async (req, res) => {
     const { job_id } = req.body;
     try {
-        await db.query('DELETE FROM jobs WHERE job_id', [job_id]);
+        await db.query('DELETE FROM jobs WHERE job_id = ?', [job_id]);
         res.send(204).send('Delete succeeded');
     } catch (err) {
         console.error('Error while deleting job:', err);
