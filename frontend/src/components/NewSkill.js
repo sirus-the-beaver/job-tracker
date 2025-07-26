@@ -1,15 +1,54 @@
+//  References:
+//  OWASP XSS Prevention Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding
+//  - MDN Web Docs on HTML character references: https://developer.mozilla.org/en-US/docs/Glossary/Character_reference
+//  
+//  Escaped characters:
+//  - & → &amp; (ampersand)
+//  - < → &lt; (less-than sign)
+//  - > → &gt; (greater-than sign)
+//  - " → &quot; (double quote)
+//  - ' → &#039; (single quote/apostrophe) 
+
+
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
+const sanitizeInput = (input) => {
+  if (!input) return '';
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
 const NewSkill = () => {
   const [skills, setSkills] = useState([
-    { id: 1, name: 'JavaScript', proficiency: 'Advanced' },
-    { id: 2, name: 'React', proficiency: 'Intermediate' }
+    { 
+      id: 1, 
+      name: 'SQL', 
+      proficiency: 'beginner',
+      description: 'Proficient in MySQL',
+      confidence: 8, 
+      lastPracticed: '2025-07-25'
+    },
+    { 
+      id: 2, 
+      name: 'React', 
+      proficiency: 'Intermediate',
+      description: 'Proficient in building custom components',
+      confidence: 6, 
+      lastPracticed: '2025-07-25'
+    }
   ]);
 
   const [skillName, setSkillName] = useState('');
   const [proficiency, setProficiency] = useState('Beginner');
+  const [description, setDescription] = useState('');
+  const [confidence_score, setConfidenceScore] = useState(5);
+  const [last_practiced, setLastPracticed] = useState('');
   const [errors, setErrors] = useState({});
 
   const handleAddSkill = (newSkill) => {
@@ -23,9 +62,31 @@ const NewSkill = () => {
 
   const validateForm = () => {
     const newErrors = {};
+    
     if (!skillName.trim()) {
       newErrors.skillName = 'Skill name is required';
+    } else if (skillName.length > 100) {
+      newErrors.skillName = 'Skill name cannot exceed 100 characters';
     }
+    
+    if (description.length > 500) {
+      newErrors.description = 'Description cannot exceed 500 characters';
+    }
+    
+    if (confidence_score < 1 || confidence_score > 10) {
+      newErrors.confidence = 'Confidence score must be between 1 and 10';
+    }
+    
+    if (!last_practiced) {
+      newErrors.last_practiced = 'Please select when you last practiced this skill';
+    } else {
+      const selectedDate = new Date(last_practiced);
+      const today = new Date();
+      if (selectedDate > today) {
+        newErrors.last_practiced = 'Last practiced date cannot be in the future';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -33,9 +94,20 @@ const NewSkill = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      handleAddSkill({ name: skillName, proficiency });
+      handleAddSkill({ 
+        name: sanitizeInput(skillName), 
+        proficiency,
+        description: sanitizeInput(description),
+        confidence: Number(confidence_score),
+        last_practiced
+      });
+      
+      // Reset form
       setSkillName('');
       setProficiency('Beginner');
+      setDescription('');
+      setConfidenceScore(5); 
+      setLastPracticed('');
     }
   };
 
@@ -44,13 +116,13 @@ const NewSkill = () => {
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">My Skills</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-8">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-700 mb-4">Add New Skill</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="skillName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Skill Name
+                  Skill Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -70,6 +142,27 @@ const NewSkill = () => {
               </div>
 
               <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                    errors.description 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-blue-500'
+                  }`}
+                  placeholder="Describe your experience with this skill"
+                  rows="3"
+                />
+                {errors.description && (
+                  <p className="text-red-500 text-xs mt-1">{errors.description}</p>
+                )}
+              </div>
+
+              <div>
                 <label htmlFor="proficiency" className="block text-sm font-medium text-gray-700 mb-1">
                   Proficiency Level
                 </label>
@@ -84,6 +177,48 @@ const NewSkill = () => {
                   <option value="Advanced">Advanced</option>
                   <option value="Expert">Expert</option>
                 </select>
+              </div>
+
+              <div>
+                <label htmlFor="confidence" className="block text-sm font-medium text-gray-700 mb-1">
+                  Confidence Score (1-10) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="confidence_score"
+                  value={confidence_score}
+                  onChange={(e) => setConfidenceScore(Number(e.target.value))}
+                  min="1" 
+                  max="10" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                    errors.confidence 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-blue-500'
+                  }`}
+                />
+                {errors.confidence && (
+                  <p className="text-red-500 text-xs mt-1">{errors.confidence}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="lastPracticed" className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Practiced <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="last_practiced"
+                  value={last_practiced}
+                  onChange={(e) => setLastPracticed(e.target.value)}
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                    errors.lastPracticed 
+                      ? 'border-red-500 focus:border-red-500' 
+                      : 'border-gray-300 focus:border-blue-500'
+                  }`}
+                />
+                {errors.lastPracticed && (
+                  <p className="text-red-500 text-xs mt-1">{errors.lastPracticed}</p>
+                )}
               </div>
 
               <button
@@ -105,17 +240,28 @@ const NewSkill = () => {
                 {skills.map((skill) => (
                   <div
                     key={skill.id}
-                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-medium text-gray-900">{skill.name}</h3>
                       <p className="text-sm text-gray-500">
                         Proficiency: <span className="font-medium">{skill.proficiency}</span>
                       </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Confidence: <span className="font-medium">{skill.confidence}/10</span>
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Last practiced: <span className="font-medium">{new Date(skill.lastPracticed).toLocaleDateString()}</span>
+                      </p>
+                      {skill.description && (
+                        <p className="text-sm text-gray-600 mt-1 italic">
+                          "{skill.description}"
+                        </p>
+                      )}
                     </div>
                     <button
                       onClick={() => handleDeleteSkill(skill.id)}
-                      className="text-red-500 hover:text-red-700 transition-colors p-1"
+                      className="text-red-500 hover:text-red-700 transition-colors p-1 mt-3 md:mt-0"
                       aria-label={`Delete ${skill.name}`}
                     >
                       <FontAwesomeIcon icon={faTrashAlt} />
