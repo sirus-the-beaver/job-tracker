@@ -32,4 +32,19 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.put('/', async (req, res) => {
+    // const user_id = req.user.user_id;
+    const { user_id, skill_id, name, description, proficiency, confidence_score, last_practiced } = req.body;
+    try {
+        // Update skill
+        await db.query('UPDATE skills SET name = ?, description = ? WHERE skill_id = ? AND user_id = ?', [name, description || null, skill_id, user_id]);
+        // Update proficiency and confidence score
+        await db.query('UPDATE users_skills SET proficiency = ?, confidence_score = ?, last_practiced =? WHERE user_id = ? AND skill_id =?', [proficiency || null, confidence_score || null, last_practiced || null, user_id, skill_id])
+        res.status(200).send('Skill updated successfully');
+    } catch (err) {
+        console.error('Error updating skill:', err);
+        res.status(500).send('Error updating skill');
+    }
+})
+
 module.exports = router;
