@@ -16,14 +16,14 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const user_id = req.user.user_id;
-    const { name, description, proficiency, confidence_score, last_practiced } = req.body;
+    const { name, description, proficiency, confidence_score, last_practiced } = req.body;        
     try {
         // Insert new skill into the database
-        await db.query('INSERT INTO skills (user_id, name, description) VALUES (?, ?, ?)', [user_id, name, description]);
+        await db.query('INSERT INTO skills (user_id, name, description) VALUES (?, ?, ?)', [user_id, name, description || null]);
         const lastId = await db.query('SELECT LAST_INSERT_ID()');
         const skillId = lastId[0][0]['LAST_INSERT_ID()'];
         // Insert proficiency and confidence score
-        await db.query('INSERT INTO users_skills (user_id, skill_id, proficiency, confidence_score, last_practiced) VALUES (?, ?, ?, ?, ?)', [user_id, skillId, proficiency, confidence_score, last_practiced]);
+        await db.query('INSERT INTO users_skills (user_id, skill_id, proficiency, confidence_score, last_practiced) VALUES (?, ?, ?, ?, ?)', [user_id, skillId, proficiency || null, confidence_score || null, last_practiced || null]);
 
         res.status(201).send('Skill added successfully');
     } catch (err) {
