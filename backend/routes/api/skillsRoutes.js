@@ -6,8 +6,21 @@ router.get('/', async (req, res) => {
     const user_id = req.user.user_id;
     try {
         // Fetch all skills for the authenticated user
-        const skills = await db.query('SELECT * FROM skills WHERE user_id = ?', [user_id]);
-        res.send(skills[0]);
+        const skillsQuery = await db.query('SELECT * FROM skills WHERE user_id = ?', [user_id]);
+        const skillsUserQuery = await db.query('SELECT * FROM users_skills WHERE user_id = ?', [user_id]);
+
+        // Combine data from skills and users_skills tables into a single array of skill objects
+        const skills = skillsQuery[0].map(skill => {
+            // Find the corresponding user skill data based on skill_id
+            const userSkill = skillsUserQuery[0].find(us => us.skill_id === skill.skill_id);
+            return {
+                ...skill,
+                proficiency: userSkill ? userSkill.proficiency : null,
+                confidence_score: userSkill ? userSkill.confidence_score : null,
+                last_practiced: userSkill ? userSkill.last_practiced : null
+            };
+        });
+        res.status(200).send(skills);
     } catch (err) {
         console.error('Error fetching skills:', err);
         res.status(500).send('Error fetching skills');
