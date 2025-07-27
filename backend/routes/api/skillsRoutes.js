@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../database/db-connector');
 
+// GET all skills for the authenticated user
 router.get('/', async (req, res) => {
     const user_id = req.user.user_id;
     try {
@@ -25,7 +26,33 @@ router.get('/', async (req, res) => {
         console.error('Error fetching skills:', err);
         res.status(500).send('Error fetching skills');
     }
-})
+});
+
+// GET a single skill by skill_id for the authenticated user
+router.get('/:skill_id', async (req, res) => {
+    const user_id = req.user.user_id;
+    const skill_id = req.params.skill_id;
+    try {
+        // Fetch skill by skill_id for the authenticated user
+        const skillQuery = await db.query('SELECT * FROM skills WHERE skill_id = ? AND user_id = ?', [skill_id, user_id]);
+        const userSkillQuery = await db.query('SELECT * FROM users_skills WHERE skill_id = ? AND user_id = ?', [skill_id, user_id]);
+
+        const skill = skillQuery[0][0];
+        const userSkill = userSkillQuery[0][0];
+
+        // Combine data into a single object
+        const result = {
+            ...skill,
+            proficiency: userSkill ? userSkill.proficiency : null,
+            confidence_score: userSkill ? userSkill.confidence_score : null,
+            last_practiced: userSkill ? userSkill.last_practiced : null
+        };
+        res.status(200).send(result);
+    } catch (err) {
+        console.error('Error fetching skill:', err);
+        res.status(500).send('Error fetching skill');
+    }
+});
 
 router.post('/', async (req, res) => {
     const user_id = req.user.user_id;
