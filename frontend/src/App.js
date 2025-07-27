@@ -18,6 +18,8 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import NewJob from './components/NewJob';
+import NewSkill from './components/NewSkill';
+
 
 function App() {
   return (
@@ -25,11 +27,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/new-job" element={<NewJob />} />
+        <Route path="/new-skill" element={<NewSkill />} />
         <Route element={<PrivateRoute />}>
           {/* Add private routes here */}
-          <Route path="/" element={<Dashboard />} />
         </Route>
       </Routes>
     </AuthProvider>
