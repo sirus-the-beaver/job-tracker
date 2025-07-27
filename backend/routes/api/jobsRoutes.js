@@ -59,7 +59,6 @@ router.put('/', async (req, res) => {
     const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
         await db.query('UPDATE jobs SET positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE job_id = ? AND user_id = ?',  [
-            job_id,
             positionTitle,
             company,
             city,
@@ -72,6 +71,7 @@ router.put('/', async (req, res) => {
             classification,
             tier,
             link,
+            job_id,
             user_id,
         ]);
         res.status(204).send('Update succeeded');
