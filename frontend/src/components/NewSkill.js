@@ -1,28 +1,12 @@
-//  References:
-//  OWASP XSS Prevention Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding
-//  - MDN Web Docs on HTML character references: https://developer.mozilla.org/en-US/docs/Glossary/Character_reference
-//  
-//  Escaped characters:
-//  - & → &amp; (ampersand)
-//  - < → &lt; (less-than sign)
-//  - > → &gt; (greater-than sign)
-//  - " → &quot; (double quote)
-//  - ' → &#039; (single quote/apostrophe) 
-
-
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
-const sanitizeInput = (input) => {
-  if (!input) return '';
-  return input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+const VALIDATION_PATTERNS = {
+  skillName: /^[a-zA-Z0-9\s\-_()]+$/,
+  description: /^[^<>&]*$/
 };
+
 
 const NewSkill = () => {
   const [skills, setSkills] = useState([
@@ -67,10 +51,14 @@ const NewSkill = () => {
       newErrors.skillName = 'Skill name is required';
     } else if (skillName.length > 100) {
       newErrors.skillName = 'Skill name cannot exceed 100 characters';
+    }else if (!VALIDATION_PATTERNS.skillName.test(skillName)) {
+      newErrors.skillName = 'Invalid characters. Letters, numbers, spaces, and -_() are allowed.';
     }
     
     if (description.length > 500) {
       newErrors.description = 'Description cannot exceed 500 characters';
+    }else if (description && !VALIDATION_PATTERNS.description.test(description)) {
+      newErrors.description = 'Invalid characters. Avoid <, >, & symbols.';
     }
     
     if (confidence_score < 1 || confidence_score > 10) {
@@ -95,9 +83,9 @@ const NewSkill = () => {
     e.preventDefault();
     if (validateForm()) {
       handleAddSkill({ 
-        name: sanitizeInput(skillName), 
+        name: skillName, 
         proficiency,
-        description: sanitizeInput(description),
+        description: description,
         confidence: Number(confidence_score),
         last_practiced
       });
