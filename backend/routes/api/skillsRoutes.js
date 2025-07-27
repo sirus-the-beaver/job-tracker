@@ -37,7 +37,6 @@ router.post('/', async (req, res) => {
         const skillId = lastId[0][0]['LAST_INSERT_ID()'];
         // Insert proficiency and confidence score
         await db.query('INSERT INTO users_skills (user_id, skill_id, proficiency, confidence_score, last_practiced) VALUES (?, ?, ?, ?, ?)', [user_id, skillId, proficiency || null, confidence_score || null, last_practiced || null]);
-
         res.status(201).send('Skill added successfully');
     } catch (err) {
         console.error('Error adding skill:', err);
@@ -45,9 +44,10 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.put('/', async (req, res) => {
-    // const user_id = req.user.user_id;
-    const { user_id, skill_id, name, description, proficiency, confidence_score, last_practiced } = req.body;
+router.put('/:skill_id', async (req, res) => {
+    const user_id = req.user.user_id;
+    const skill_id = req.params.skill_id;
+    const { name, description, proficiency, confidence_score, last_practiced } = req.body;
     try {
         // Update skill
         await db.query('UPDATE skills SET name = ?, description = ? WHERE skill_id = ? AND user_id = ?', [name, description || null, skill_id, user_id]);
@@ -58,6 +58,20 @@ router.put('/', async (req, res) => {
         console.error('Error updating skill:', err);
         res.status(500).send('Error updating skill');
     }
-})
+});
+
+router.delete('/:skill_id', async (req, res) => {
+    const user_id = req.user.user_id;
+    const skill_id = req.params.skill_id;
+    try {
+        // Delete skill and associated users_skills data
+        await db.query('DELETE FROM users_skills WHERE skill_id = ? AND user_id = ?', [skill_id, user_id]);
+        await db.query('DELETE FROM skills WHERE skill_id = ? AND user_id = ?', [skill_id, user_id]);
+        res.status(200).send('Skill deleted successfully');
+    } catch (err) {
+        console.error('Error deleting skill:', err);
+        res.status(500).send('Error deleting skill');
+    }
+});
 
 module.exports = router;
