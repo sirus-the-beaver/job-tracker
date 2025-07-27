@@ -27,12 +27,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/new-job" element={<NewJob />} />
         <Route path="/new-skill" element={<NewSkill />} />
         <Route element={<PrivateRoute />}>
           {/* Add private routes here */}
-          <Route path="/" element={<Dashboard />} />
         </Route>
       </Routes>
     </AuthProvider>
