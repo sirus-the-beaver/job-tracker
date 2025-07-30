@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../database/db-connector.js');
+const jobsRoute = require('./routes/api/jobsRoutes');
+const skillsRoutes = require('./routes/api/skillsRoutes');
+
 
 // Track skill fluency: Allow users to track how comfortable they are with skills 
 // and if they need to improve certain skills
 
-// Make use of the JOIN clause to join data from skills, users_skills, and jobs_skills
+// Per Sirus: "Make use of the JOIN clause to join data from skills, users_skills, and jobs_skills"
 
 // “Allows them to track which jobs require which skills, see how 
 // frequently certain skills are noted within applications, and track 
