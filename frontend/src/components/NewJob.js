@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const NewJob = () => {
     const classifications = ['Job', 'Internship'];
+    const skills = ['Add New Skill'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
     const tiers = ['Dream Position', 'Good Fit', 'Backup'];
 
@@ -18,7 +19,7 @@ const NewJob = () => {
     const [dateApplied, setDateApplied] = useState(null);
     const [link, setLink] = useState('');
     const [notes, setNotes] = useState('');
-    const [skills, setSkills] = useState('');
+    const [skill, setSkill] = useState('');
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -56,13 +57,21 @@ const NewJob = () => {
         setSalaryMax('');
         setLink('');
         setNotes('');
-        setSkills('');
+        setSkill('');
         setDateApplied(null);
         setError('');
     };
 
     const handleCancel = () => {
         navigate('/');
+    };
+
+    const handleNewSkill = (e) => {
+        if ((e.target.value) === 'Add New Skill') {
+            navigate('/new-skill');;
+        } else {
+            setSkill(e.target.value);
+        }
     };
 
     useEffect(() => {
@@ -246,14 +255,16 @@ const NewJob = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="skills" className='block text-sm font-medium text-gray-700'>Skills</label>
+                            <label htmlFor="skill" className='block text-sm font-medium text-gray-700'>Skill</label>
                             <select
-                                id="skills" 
-                                value={skills} 
-                                onChange={(e) => setNotes(e.target.value)} 
+                                id="skill" 
+                                isMulti
+                                value={skill} 
+                                onChange={(e) => handleNewSkill(e.target.value)} 
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
-                            ></select>
-                            <button type="button" onClick={handleCancel} className='w-full sm:w-auto px-5 py-2 bg-green-500 text-white-700 rounded-lg hover:bg-green-500 shadow-sm transition'>Add Skill</button>
+                            >
+                                <option value="Add New Skill">Add New Skill</option>
+                            </select>
                         </div>
                     </div>
 
