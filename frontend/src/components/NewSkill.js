@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const VALIDATION_PATTERNS = {
-  skillName: /^[a-zA-Z0-9\s\-_()]+$/,
+  skillName: /^[a-zA-Z0-9+\s\-_()]+$/,
   description: /^[^<>&]*$/
 };
 
@@ -52,7 +52,7 @@ const NewSkill = () => {
     } else if (skillName.length > 100) {
       newErrors.skillName = 'Skill name cannot exceed 100 characters';
     }else if (!VALIDATION_PATTERNS.skillName.test(skillName)) {
-      newErrors.skillName = 'Invalid characters. Letters, numbers, spaces, and -_() are allowed.';
+      newErrors.skillName = 'Invalid characters. Letters, numbers, spaces, and +-_() are allowed.';
     }
     
     if (description.length > 500) {
