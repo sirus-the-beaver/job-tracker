@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const login = async(data) => {
         try {
-            const req = await axios.post('http://localhost:5043/user/login', data, {
+            const req = await axios.post('http://localhost:5045/user/login', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

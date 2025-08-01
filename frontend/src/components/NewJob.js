@@ -23,6 +23,7 @@ const NewJob = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
     const validateInput = (input) => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;
@@ -60,7 +61,7 @@ const NewJob = () => {
             const response = await axios.post('http://localhost:5043/jobs', jobData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                    Authorization: `Bearer ${token}`,
                 }
             });
             if (response.status === 201) {

@@ -20,6 +20,7 @@ import Dashboard from './components/Dashboard';
 import NewJob from './components/NewJob';
 import NewSkill from './components/NewSkill';
 import NewContact from './components/NewContact';
+import ViewJobs from './components/ViewJobs';
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           {/* Add private routes here */}
           <Route path="/" element={<Dashboard />} />
           <Route path="/new-job" element={<NewJob />} />
+          <Route path="/view-jobs" element={<ViewJobs />} />
         </Route>
       </Routes>
     </AuthProvider>
