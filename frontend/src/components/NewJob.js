@@ -66,13 +66,11 @@ const NewJob = () => {
         navigate('/');
     };
 
-    const handleNewSkill = (e) => {
-        if ((e.target.value) === 'Add New Skill') {
+    useEffect (() => {
+        if (skill === 'Add New Skill') {
             navigate('/new-skill');
-        } else {
-            setSkill(e.target.value);
         }
-    };
+    }, [skill]);
 
     useEffect(() => {
         if (status !== 'Interested') {
@@ -260,7 +258,7 @@ const NewJob = () => {
                                 id="skill" 
                                 isMulti
                                 value={skill} 
-                                onChange={(e) => handleNewSkill(e.target.value)} 
+                                onChange={(e) => setSkill(e.target.value)}
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             >
                                 <option value="Test">Test</option>

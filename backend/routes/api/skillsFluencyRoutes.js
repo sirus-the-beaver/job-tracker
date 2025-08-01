@@ -28,8 +28,13 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST: create a new resource (e.g., add a new skill to the database)
+// POST: create a new resource (e.g., add a users new skill to the database)
 // POST route should receive data payload from frontend and store in DB
+router.post('/', async (req, res) => {
+    const user_id = req.user.user_id;
+    const { } = req.body;
+
+})
 
 
 // PUT: update an existing resource (or create a new one if it doesn't exist)
