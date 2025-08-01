@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const login = async(data) => {
         try {
-            const req = await axios.post('http://localhost:5016/user/login', data, {
+            const req = await axios.post('http://localhost:5043/user/login', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -26,10 +26,17 @@ const AuthProvider = ({ children }) => {
                 setToken(res.token);
                 localStorage.setItem('token', res.token);
                 navigate('/');
-                return;
+                return {
+                    success: true,
+                    message: 'Login successful',
+                };
             }
         } catch (error) {
             console.error('Login error:', error);
+            return {
+                success: false,
+                message: 'Login failed. Please check your credentials and try again.',
+            };
         }
     };
     const logout = () => {
