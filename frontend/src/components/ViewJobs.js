@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 
 const ViewJobs = () => {
@@ -47,58 +49,56 @@ const ViewJobs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-700 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-auto fade-in">
-                <h1 className="text-2xl font-bold mb-6 text-center">View Jobs</h1>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-xl w-full mx-auto fade-in">
+                <h1 className="text-2xl font-bold mb-6 text-center">Jobs</h1>
                 {loading ? (
                     <p>Loading jobs...</p>
                 ) : error ? (
                     <p className="text-red-500">{error}</p>
                 ) : (
-                    <ul className="space-y-4">
+                    <div className="space-y-4">
                         {jobs.map(job => (
-                            <li key={job.job_id} className="border rounded-lg p-4">
+                            <div key={job.job_id} className="bg-gray-100 p-4 rounded-lg shadow">
                                 <h2 className="text-xl font-semibold">{job.positionTitle} at {job.company}</h2>
+                                <p><strong>Classification:</strong> {job.classification}</p>
+                                <p><strong>Status:</strong> {job.status}</p>
+                                <p><strong>Tier:</strong> {job.tier}</p>
                                 {job.city && (
-                                    <p className="text-gray-600">City: {job.city}</p>
+                                    <p><strong>City:</strong> {job.city}</p>
                                 )}
                                 {job.state && (
-                                    <p className="text-gray-600">State: {job.state}</p>
+                                    <p><strong>State:</strong> {job.state}</p>
                                 )}
-                                <p>Status: {job.status}</p>
-                                <p>Classification: {job.classification}</p>
-                                <p>Tier: {job.tier}</p>
                                 {job.salary_min && (
-                                    <p>Salary Min: ${job.salary_min}</p>
-                                )
-                                }
+                                    <p><strong>Salary Min:</strong> ${job.salary_min.toLocaleString()}</p>
+                                )}
                                 {job.salary_max && (
-                                    <p>Salary Max: ${job.salary_max}</p>
+                                    <p><strong>Salary Max:</strong> ${job.salary_max.toLocaleString()}</p>
                                 )}
                                 {job.application_date && (
-                                    <p>Application Date: {new Date(job.application_date).toLocaleDateString()}</p>
+                                    <p><strong>Application Date:</strong> {new Date(job.application_date).toLocaleDateString()}</p>
                                 )}
                                 {job.notes && (
-                                    <p>Notes: {job.notes}</p>
+                                    <p><strong>Notes:</strong> {job.notes}</p>
                                 )}
                                 { job.link && (
-                                    <p>Link: {job.link}</p>
+                                    <p><strong>Link:</strong> {job.link}</p>
                                 )}
-                                <button
-                                    onClick={() => handleEditJob(job.job_id)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteJob(job.job_id)}
-                                    className="bg-red-500 text-white px-4 py-2 rounded"
-                                >
-                                    Delete
-                                </button>
-                            </li>
+                                <div className="flex justify-center mt-4">
+                                    <button onClick={() => handleEditJob(job.job_id)} className="text-blue-500 hover:text-blue-100 hover:bg-blue-500 bg-blue-100">
+                                        <FontAwesomeIcon icon={faPenToSquare} /> Edit
+                                    </button>
+                                    <button onClick={() => handleDeleteJob(job.job_id)} className="text-red-500 hover:text-red-100 hover:bg-red-500 bg-red-100">
+                                        <FontAwesomeIcon icon={faTrash} /> Delete
+                                    </button>
+                                </div>
+                            </div>
                         ))}
-                    </ul>
+                        {jobs.length === 0 && (
+                            <p className="text-gray-500">No jobs found. Please add some jobs.</p>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
