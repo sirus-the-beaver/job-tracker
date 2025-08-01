@@ -59,9 +59,8 @@ CREATE TABLE contacts (
     last_name VARCHAR(45) NOT NULL,
     email VARCHAR(45) DEFAULT NULL,
     phone VARCHAR(45) DEFAULT NULL,
-    company VARCHAR(100) DEFAULT NULL,
     position VARCHAR(100) DEFAULT NULL,
-    notes TEXT,
+    notes TEXT DEFAULT NULL,
     PRIMARY KEY (contact_id),
     KEY fk_contacts_users_idx (user_id),
     CONSTRAINT fk_contacts_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
