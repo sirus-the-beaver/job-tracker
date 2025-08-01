@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const NewJob = () => {
     const classifications = ['Job', 'Internship'];
@@ -18,9 +19,11 @@ const NewJob = () => {
     const [salaryMax, setSalaryMax] = useState('');
     const [dateApplied, setDateApplied] = useState(null);
     const [link, setLink] = useState('');
+    const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState('');
     const [skill, setSkill] = useState(skills[0]);
     const [error, setError] = useState('');
+    const token = localStorage.getItem('token');
 
     const navigate = useNavigate();
 
@@ -65,6 +68,25 @@ const NewJob = () => {
     const handleCancel = () => {
         navigate('/');
     };
+
+    useEffect(() => {
+        const fetchSkills = async () => {
+            try {
+                const response = await axios.get('http://localhost:5045/skills', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setSkill(response.data);
+            } catch (err) {
+                console.error('Error fetching skills:', err);
+                setError('Failed to load skills. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSkills;
+    }, [token]);
 
     useEffect (() => {
         if (skill === 'Add New Skill') {
