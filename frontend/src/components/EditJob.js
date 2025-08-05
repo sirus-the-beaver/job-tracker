@@ -54,24 +54,27 @@ const EditJob = () => {
         };
 
         try {
-            const response = await axios.put(`http://localhost:5000/jobs/${jobId}`, jobData,
+            const response = await axios.put(`http://localhost:5045/jobs/${jobId}`, jobData,
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
             if (response.status === 204) {
                 setSuccess(true);
-                setTimeout(() => navigate('/jobs'), 2000);
             }
         } catch (error) {
             setError('Failed to update job. Please try again.');
         }
     };
 
+    const handleCancel = () => {
+        navigate('/view-jobs');
+    };
+
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/jobs/${jobId}`, {
+                const response = await axios.get(`http://localhost:5045/jobs/${jobId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const job = response.data;
@@ -84,7 +87,7 @@ const EditJob = () => {
                 setTier(job.tier);
                 setSalaryMin(job.salary_min || '');
                 setSalaryMax(job.salary_max || '');
-                setDateApplied(job.application_date || null);
+                setDateApplied(job.application_date ? new Date(job.application_date).toISOString().split('T')[0] : '');
                 setLink(job.link || '');
                 setNotes(job.notes || '');
             } catch (error) {
@@ -93,6 +96,12 @@ const EditJob = () => {
         };
         fetchJob();
     }, [jobId, token]);
+
+    useEffect(() => {
+        if (status !== 'interested') {
+            setDateApplied(new Date().toISOString().split('T')[0]);
+        }
+    }, [status]);
 
     return (
         <div>
@@ -116,10 +125,10 @@ const EditJob = () => {
                         <h2 className='text-lg font-semibold text-green-600'>Submission Successful</h2>
                         <p className='text-sm text-gray-700'>Your job application has been updated successfully!</p>
                         <button
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/view-jobs')}
                             className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
                         >
-                            Go to Dashboard
+                            Go back to view jobs
                         </button>
                     </div>
                 </div>
@@ -178,11 +187,11 @@ const EditJob = () => {
                                 onChange={(e) => setStatus(e.target.value)}
                                 className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             >
-                                <option value="Interested">Interested</option>
-                                <option value="Applied">Applied</option>
-                                <option value="Interviewing">Interviewing</option>
-                                <option value="Offer">Offer</option>
-                                <option value="Rejected">Rejected</option>
+                                <option value="interested">Interested</option>
+                                <option value="applied">Applied</option>
+                                <option value="interviewing">Interviewing</option>
+                                <option value="offer">Offer</option>
+                                <option value="rejected">Rejected</option>
                             </select>
                         </div>
 
@@ -244,7 +253,7 @@ const EditJob = () => {
                             />
                         </div>
 
-                        {status !== 'Interested' && 
+                        {status !== 'interested' && 
                         (
                             <div>
                                 <label htmlFor="dateApplied" className='block text-sm font-medium text-gray-700'>Date Applied</label>
@@ -286,7 +295,6 @@ const EditJob = () => {
 
                     <div className='flex flex-col sm:flex-row gap-4 justify-end pt-4'>
                         <button type="button" onClick={handleCancel} className='w-full sm:w-auto px-5 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 shadow-sm transition'>Cancel</button>
-                        <button type="reset" className='w-full sm:w-auto px-5 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 shadow-sm transition'>Reset</button>
                         <button type="submit" className='w-full sm:w-auto px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md transition'>Submit</button>
                     </div>
                 </form>
@@ -294,3 +302,5 @@ const EditJob = () => {
         </div>
     )
 };
+
+export default EditJob;
