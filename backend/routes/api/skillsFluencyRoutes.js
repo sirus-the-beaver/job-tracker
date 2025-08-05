@@ -18,13 +18,50 @@ const skillsRoutes = require('./routes/api/skillsRoutes');
 // GET a specific resource (e.g., get all of the skills a user has added to their skill list)
 // GET route should basically return all of the skills that a user has added to their skill list
 router.get('/', async (req, res) => {
+    const job_id = req.params.job_id;
+    const skill_id = req.params.skill_id;
     const user_id = req.user.user_id;
     try {
-        const skills = await db.query('SELECT * FROM users_skills WHERE user_id = ?', [user_id]);
-        res.send(skills[0]);
+        const skillsQuery = await db.query('SELECT * FROM skills WHERE user_id = ?', [user_id]);
+        const jobSkillsQuery = await db.query('SELECT * FROM jobs_skills WHERE skill_id = ? AND job_id = ?', [skill_id, job_id]);
+
+        // Combine data from skills and job_skills tables into a single array of skill objects
+        const skills = skillsQuery[0].map(skill => {
+            // Find the corresponding job skill data based on skill_id
+            const jobSkill = jobSkillsQuery[0].find(us => us.skill_id === skill.skill_id);
+            return {
+                ...skill,
+                proficiency_required: jobSkill ? jobSkill.proficiency_required : null,
+            };
+        });
+        res.status(200).send(skills);
     } catch (err) {
         console.error('Error getting job skills:', err);
         res.status(500).send('Query error');
+    }
+});
+
+// GET a single skill by skill_id
+router.get('/:skill_id', async (req, res) => {
+    const user_id = req.user.user_id;
+    const skill_id = req.params.skill_id;
+    try {
+        // Fetch skill by skill_id for the authenticated user
+        const skillQuery = await db.query('SELECT * FROM skills WHERE skill_id = ? AND user_id = ?', [skill_id, user_id]);
+        const jobSkillQuery = await db.query('SELECT * FROM jobs_skills WHERE skill_id = ? AND job_id = ?', [skill_id, job_id]);
+
+        const skill = skillQuery[0][0];
+        const jobSkill = jobSkillQuery[0][0];
+
+        // Combine data into a single object
+        const result = {
+            ...skill,
+            proficiency_required: jobSkill ? jobSkill.proficiency_required : null,
+        };
+        res.status(200).send(result);
+    } catch (err) {
+        console.error('Error fetching job skill:', err);
+        res.status(500).send('Error fetching job skill');
     }
 });
 
