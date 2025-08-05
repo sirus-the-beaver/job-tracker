@@ -30,8 +30,6 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/new-skill" element={<NewSkill />} />
-        <Route path="/new-contact" element={<NewContact />} />
         
         <Route element={<PrivateRoute />}>
           {/* Add private routes here */}
@@ -39,6 +37,8 @@ function App() {
           <Route path="/new-job" element={<NewJob />} />
           <Route path="/view-jobs" element={<ViewJobs />} />
           <Route path="/edit-job/:jobId" element={<EditJob />} />
+          <Route path="/new-skill" element={<NewSkill />} />
+          <Route path="/new-contact" element={<NewContact />} />
         </Route>
       </Routes>
     </AuthProvider>
