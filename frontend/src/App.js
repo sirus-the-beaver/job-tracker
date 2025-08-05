@@ -20,6 +20,7 @@ import Dashboard from './components/Dashboard';
 import NewJob from './components/NewJob';
 import NewSkill from './components/NewSkill';
 import NewContact from './components/NewContact';
+import ViewJobs from './components/ViewJobs';
 
 
 function App() {
@@ -28,14 +29,14 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/new-job" element={<NewJob />} />
         <Route path="/new-skill" element={<NewSkill />} />
         <Route path="/new-contact" element={<NewContact />} />
         
-        {/* Catch-all route for 404 Not Found */}
         <Route element={<PrivateRoute />}>
           {/* Add private routes here */}
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/new-job" element={<NewJob />} />
+          <Route path="/view-jobs" element={<ViewJobs />} />
         </Route>
       </Routes>
     </AuthProvider>

@@ -40,7 +40,14 @@ const Login = () => {
         setUser('');
         setPwd('');
         setSuccess(true);
-        auth.login({ email: user, password: pwd })
+        const response = await auth.login({ email: user, password: pwd });
+        if (response.success) {
+                navigate('/');
+        } else {
+            setErrMsg(response.message);
+            errRef.current.focus();
+            setSuccess(false);
+        }
     };
 
     const togglePasswordVisibility = () => {
