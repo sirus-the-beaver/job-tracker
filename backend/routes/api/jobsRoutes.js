@@ -25,6 +25,19 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET a specific resource by ID (e.g., get a specific job by job_id)
+router.get('/:job_id', async (req, res) => {
+    const user_id = req.user.user_id;
+    const { job_id } = req.params;
+    try {
+        const job = await db.query('SELECT * FROM jobs WHERE job_id = ? AND user_id = ?', [job_id, user_id]);
+        res.status(200).send(job[0][0]);
+    } catch (err) {
+        console.error('Error getting job by ID:', err);
+        res.status(500).send('Query error');
+    }
+});
+
 // POST: create a new resource (e.g., add a new job to the database)
 // POST route should receive data payload from frontend and store in DB
 router.post('/', async (req, res) => {

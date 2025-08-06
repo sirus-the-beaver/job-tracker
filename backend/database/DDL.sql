@@ -46,7 +46,7 @@ CREATE TABLE skills (
     skill_id INT(11) NOT NULL AUTO_INCREMENT,
     user_id INT(11) NOT NULL,
     name VARCHAR(45) NOT NULL,
-    description TEXT,
+    description TEXT DEFAULT NULL,
     PRIMARY KEY (skill_id),
     KEY fk_skills_users_idx (user_id),
     CONSTRAINT fk_skills_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -69,7 +69,7 @@ CREATE TABLE contacts (
 CREATE TABLE jobs_skills (
     job_id INT(11) NOT NULL,
     skill_id INT(11) NOT NULL,
-    proficiency_required ENUM('beginner', 'intermediate', 'advanced') DEFAULT NULL,
+    proficiency_required ENUM('beginner', 'intermediate', 'advanced', 'expert') DEFAULT NULL,
     PRIMARY KEY (job_id, skill_id),
     CONSTRAINT fk_jobs_skills_job FOREIGN KEY (job_id) REFERENCES jobs (job_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_jobs_skills_skill FOREIGN KEY (skill_id) REFERENCES skills (skill_id) ON DELETE CASCADE ON UPDATE CASCADE

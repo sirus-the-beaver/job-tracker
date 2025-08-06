@@ -82,11 +82,18 @@ const Dashboard = () => {
         <aside className="w-64 bg-white border-r border-gray-200 shadow-sm hidden md:block">
           <nav className="p-4 space-y-1">
             <a 
-              href="/dashboard" 
+              href="/" 
               className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 transition-colors"
             >
               <FontAwesomeIcon icon={faChartLine} className="mr-3 h-5 w-5" />
               Dashboard
+            </a>
+            <a
+              href="/view-jobs"
+              className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <FontAwesomeIcon icon={faBriefcase} className="mr-3 h-5 w-5" />
+              View Jobs
             </a>
           </nav>
         </aside>
