@@ -220,10 +220,10 @@ const NewSkill = () => {
                     onChange={(e) => setProficiency(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:outline-none focus:border-blue-500"
                   >
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="Expert">Expert</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                    <option value="expert">Expert</option>
                   </select>
                 </div>
 
@@ -250,7 +250,7 @@ const NewSkill = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="lastPracticed" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="last_practiced" className="block text-sm font-medium text-gray-700 mb-1">
                     Last Practiced <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -259,13 +259,13 @@ const NewSkill = () => {
                     value={last_practiced ? last_practiced : new Date().toISOString().split('T')[0]}
                     onChange={(e) => setLastPracticed(e.target.value)}
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                      errors.lastPracticed 
+                      errors.last_practiced 
                         ? 'border-red-500 focus:border-red-500' 
                         : 'border-gray-300 focus:border-blue-500'
                     }`}
                   />
-                  {errors.lastPracticed && (
-                    <p className="text-red-500 text-xs mt-1">{errors.lastPracticed}</p>
+                  {errors.last_practiced && (
+                    <p className="text-red-500 text-xs mt-1">{errors.last_practiced}</p>
                   )}
                 </div>
 
