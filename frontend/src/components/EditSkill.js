@@ -89,7 +89,7 @@ const EditSkill = () => {
     };
 
     const handleCancel = () => {
-        navigate('/view-skills');
+        navigate('/new-skill');
     };
 
     useEffect(() => {
@@ -248,13 +248,11 @@ const EditSkill = () => {
                             <p className="text-red-500 text-xs mt-1">{errors.last_practiced}</p>
                         )}
                         </div>
-
-                        <button
-                        type="submit"
-                        className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
-                        >
-                        Edit Skill
-                        </button>
+                        
+                        <div className="flex flex-col sm:flex-row justify-end pt-4">
+                            <button type="button" onClick={handleCancel} className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">Cancel</button>
+                            <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity">Edit Skill</button>
+                        </div>
                     </div>
                 </form>
           </div>
