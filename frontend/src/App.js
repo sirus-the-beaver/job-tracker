@@ -22,6 +22,7 @@ import NewSkill from './components/NewSkill';
 import NewContact from './components/NewContact';
 import ViewJobs from './components/ViewJobs';
 import EditJob from './components/EditJob';
+import EditSkill from './components/EditSkill';
 
 
 function App() {
@@ -31,13 +32,20 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         
+        {/* Add private routes here */}
         <Route element={<PrivateRoute />}>
-          {/* Add private routes here */}
           <Route path="/" element={<Dashboard />} />
+
+          {/* Jobs */}
           <Route path="/new-job" element={<NewJob />} />
           <Route path="/view-jobs" element={<ViewJobs />} />
           <Route path="/edit-job/:jobId" element={<EditJob />} />
+
+          {/* Skills */}
           <Route path="/new-skill" element={<NewSkill />} />
+          <Route path="/edit-skill/:skillId" element={<EditSkill />} />
+
+          {/* Contacts */}
           <Route path="/new-contact" element={<NewContact />} />
         </Route>
       </Routes>
