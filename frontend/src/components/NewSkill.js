@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const VALIDATION_PATTERNS = {
   skillName: /^[a-zA-Z0-9+\s\-_()]+$/,
@@ -9,36 +10,39 @@ const VALIDATION_PATTERNS = {
 
 
 const NewSkill = () => {
-  const [skills, setSkills] = useState([
-    { 
-      id: 1, 
-      name: 'SQL', 
-      proficiency: 'beginner',
-      description: 'Proficient in MySQL',
-      confidence: 8, 
-      lastPracticed: '2025-07-25'
-    },
-    { 
-      id: 2, 
-      name: 'React', 
-      proficiency: 'Intermediate',
-      description: 'Proficient in building custom components',
-      confidence: 6, 
-      lastPracticed: '2025-07-25'
-    }
-  ]);
+  const token = localStorage.getItem('token');
 
+  const [skills, setSkills] = useState([]);
   const [skillName, setSkillName] = useState('');
   const [proficiency, setProficiency] = useState('Beginner');
   const [description, setDescription] = useState('');
   const [confidence_score, setConfidenceScore] = useState(5);
-  const [last_practiced, setLastPracticed] = useState('');
+  const [last_practiced, setLastPracticed] = useState(new Date().toISOString().split('T')[0]);
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const handleAddSkill = (newSkill) => {
-    const skillWithId = { ...newSkill, id: Date.now() };
-    setSkills([...skills, skillWithId]);
-  };
+  // Fetch existing skills on component mount
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get('http://localhost:5045/skills', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.status === 200) {
+          setSkills(response.data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+        setServerError('Failed to load skills. Please try again later.');
+        setLoading(false);
+      }
+    };
+    fetchSkills();
+  }, [token]);
 
   const handleDeleteSkill = (skillId) => {
     setSkills(skills.filter(skill => skill.id !== skillId));
@@ -79,29 +83,56 @@ const NewSkill = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      handleAddSkill({ 
-        name: skillName, 
+      // Create new skill object
+      const newSkill = {
+        name: skillName,
+        description: description || null,
         proficiency,
-        description: description,
-        confidence: Number(confidence_score),
+        confidence_score: confidence_score || null,
         last_practiced
-      });
-      
-      // Reset form
-      setSkillName('');
-      setProficiency('Beginner');
-      setDescription('');
-      setConfidenceScore(5); 
-      setLastPracticed('');
+      };
+      try {
+        const response = await axios.post('http://localhost:5045/skills', newSkill, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (response.status === 201) {
+          // Reset form
+          setSkillName('');
+          setProficiency('Beginner');
+          setDescription('');
+          setConfidenceScore(5); 
+          setLastPracticed('');
+        }
+      } catch (error) {
+          setServerError('Failed to add skill. Please try again later.');
+          return;
+      };
     }
   };
 
   return (
     <div className="skills-page">
       <div className="container mx-auto px-4 py-8">
+        {serverError && (
+          <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
+              <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
+                  <h2 className='text-lg font-semibold text-red-600'>Submission Failed</h2>
+                  <p className='text-sm text-gray-700'>{serverError}</p>
+                  <button
+                      onClick={() => setServerError('')}
+                      className='mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition'
+                  >
+                      Dismiss
+                  </button>
+              </div>
+          </div>
+          )}
         <h1 className="text-3xl font-bold text-gray-800 mb-8">My Skills</h1>
         
         <div className="space-y-8">
