@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
 
 // PUT: update an existing resource (or create a new one if it doesn't exist)
 // PUT route should receive data payload and update DB for that contact ID
-router.put('/', async (req, res) => {
+router.put('/:contact_id', async (req, res) => {
     const user_id = req.user.user_id;
     const contact_id = req.params.contact_id
     const { first_name, last_name, email, phone, position, notes } = req.body;
@@ -65,7 +65,7 @@ router.put('/', async (req, res) => {
 
 // DELETE the specificed resource
 // DELETE route should delete row from DB for that contact ID
-router.delete('/', async (req, res) => {
+router.delete('/:contact_id', async (req, res) => {
     const user_id = req.user.user_id;
     const contact_id = req.params.contact_id;
     try {
