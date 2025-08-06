@@ -42,8 +42,19 @@ const NewSkill = () => {
     fetchSkills();
   }, [token, success]);
 
-  const handleDeleteSkill = (skillId) => {
-    setSkills(skills.filter(skill => skill.id !== skillId));
+  const handleDeleteSkill = async (skillId) => {
+    try {
+      await axios.delete(`http://localhost:5045/skills/${skillId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      // Remove the deleted skill from the state
+      setSkills(skills.filter(skill => skill.skill_id !== skillId));
+    } catch (error) {
+      console.error('Error deleting skill:', error);
+      setServerError('Failed to delete skill. Please try again later.');
+    }
   };
 
   const validateForm = () => {
@@ -239,7 +250,7 @@ const NewSkill = () => {
                   <input
                     type="date"
                     id="last_practiced"
-                    value={last_practiced}
+                    value={last_practiced ? last_practiced : new Date().toISOString().split('T')[0]}
                     onChange={(e) => setLastPracticed(e.target.value)}
                     className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
                       errors.lastPracticed 
@@ -292,7 +303,7 @@ const NewSkill = () => {
                       )}
                     </div>
                     <button
-                      onClick={() => handleDeleteSkill(skill.id)}
+                      onClick={() => handleDeleteSkill(skill.skill_id)}
                       className="text-red-500 hover:text-red-700 transition-colors p-1 mt-3 md:mt-0"
                       aria-label={`Delete ${skill.name}`}
                     >
