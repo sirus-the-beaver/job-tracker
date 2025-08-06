@@ -4,6 +4,7 @@ const db = require('../../database/db-connector.js');
 const jobsRoute = require('./routes/api/jobsRoutes');
 const skillsRoutes = require('./routes/api/skillsRoutes');
 
+// TO_DO: see https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255822975
 
 // Track skill fluency: Allow users to track how comfortable they are with skills 
 // and if they need to improve certain skills
