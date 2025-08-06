@@ -46,7 +46,7 @@ CREATE TABLE skills (
     skill_id INT(11) NOT NULL AUTO_INCREMENT,
     user_id INT(11) NOT NULL,
     name VARCHAR(45) NOT NULL,
-    description TEXT,
+    description TEXT DEFAULT NULL,
     PRIMARY KEY (skill_id),
     KEY fk_skills_users_idx (user_id),
     CONSTRAINT fk_skills_users FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
