@@ -22,6 +22,7 @@ const NewJob = () => {
     const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState('');
     const [skill, setSkill] = useState(skills[0]);
+    const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
     const token = localStorage.getItem('token');
 
