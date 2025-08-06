@@ -18,12 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/user', userRoutes);
-app.use('/jobs', jobsRoute);
+app.use('/jobs', authMiddleware, jobsRoute);
 app.use('/skills', skillsRoutes);
 app.use('/contacts', contactsRoutes);
-
-// Database
-const db = require('./database/db-connector');
 
 // ########################################
 // ########## LISTENER

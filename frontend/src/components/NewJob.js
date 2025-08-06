@@ -27,13 +27,14 @@ const NewJob = () => {
     const token = localStorage.getItem('token');
 
     const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
     const validateInput = (input) => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;
         return regex.test(input) || input === '';
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!positionTitle || !company) {
             setError('Please fill in all required fields.');
@@ -46,7 +47,35 @@ const NewJob = () => {
         }
         setError('');
 
-        // TO_DO: Send data to backend endpoint once backend endpoint is setup
+        const jobData = {
+            classification,
+            positionTitle,
+            company,
+            city: city || null,
+            state: state || null,
+            status,
+            tier,
+            salary_min: salaryMin || null,
+            salary_max: salaryMax || null,
+            application_date: dateApplied || null,
+            notes: notes || null,
+            link: link || null
+        };
+        try {
+            const response = await axios.post('http://localhost:5043/jobs', jobData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            if (response.status === 201) {
+                setSuccess(true);
+                handleReset();
+            }
+        } catch (error) {
+            setError('Failed to submit job application. Please try again later.');
+            return;
+        }
     };
 
     const handleReset = () => {
@@ -113,6 +142,20 @@ const NewJob = () => {
                             className='mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition'
                         >
                             Dismiss
+                        </button>
+                    </div>
+                </div>
+            )}
+            { success && (
+                <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
+                    <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
+                        <h2 className='text-lg font-semibold text-green-600'>Submission Successful</h2>
+                        <p className='text-sm text-gray-700'>Your job application has been submitted successfully!</p>
+                        <button
+                            onClick={() => navigate('/')}
+                            className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
+                        >
+                            Go to Dashboard
                         </button>
                     </div>
                 </div>

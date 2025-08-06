@@ -54,9 +54,10 @@ router.post('/', async (req, res) => {
 })
 // PUT: update an existing resource (or create a new one if it doesn't exist)
 // PUT route should receive data payload and update DB for that job ID
-router.put('/', async (req, res) => {
+router.put('/:job_id', async (req, res) => {
     const user_id = req.user.user_id;
-    const { job_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
+    const { job_id } = req.params;
+    const { positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
         await db.query('UPDATE jobs SET positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE job_id = ? AND user_id = ?',  [
             positionTitle,
@@ -83,8 +84,8 @@ router.put('/', async (req, res) => {
 
 // DELETE the specificed resource
 // DELETE route should delete row from DB for that job ID
-router.delete('/', async (req, res) => {
-    const { job_id } = req.body;
+router.delete('/:job_id', async (req, res) => {
+    const { job_id } = req.params;
     try {
         await db.query('DELETE FROM jobs WHERE job_id = ?', [job_id]);
         res.send(204).send('Delete succeeded');
