@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/user', userRoutes);
 app.use('/jobs', authMiddleware, jobsRoute);
-app.use('/skills', skillsRoutes);
+app.use('/skills', authMiddleware, skillsRoutes);
 
 // ########################################
 // ########## LISTENER
