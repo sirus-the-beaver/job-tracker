@@ -1,7 +1,8 @@
 import { useState, useEffect, use } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle, faTrashAlt, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const VALIDATION_PATTERNS = {
   skillName: /^[a-zA-Z0-9+\s\-_()]+$/,
@@ -11,6 +12,7 @@ const VALIDATION_PATTERNS = {
 
 const NewSkill = () => {
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   const [skills, setSkills] = useState([]);
   const [skillName, setSkillName] = useState('');
@@ -55,6 +57,10 @@ const NewSkill = () => {
       console.error('Error deleting skill:', error);
       setServerError('Failed to delete skill. Please try again later.');
     }
+  };
+
+  const handleEditSkill = (skillId) => {
+    navigate(`/edit-skill/${skillId}`);
   };
 
   const validateForm = () => {
@@ -282,7 +288,7 @@ const NewSkill = () => {
               <div className="space-y-3">
                 {skills.map((skill) => (
                   <div
-                    key={skill.id}
+                    key={skill.skill_id}
                     className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex-1">
@@ -302,13 +308,18 @@ const NewSkill = () => {
                         </p>
                       )}
                     </div>
-                    <button
-                      onClick={() => handleDeleteSkill(skill.skill_id)}
-                      className="text-red-500 hover:text-red-700 transition-colors p-1 mt-3 md:mt-0"
-                      aria-label={`Delete ${skill.name}`}
-                    >
-                      <FontAwesomeIcon icon={faTrashAlt} />
-                    </button>
+                    <div className="flex justify-center gap-2">
+                      <button onClick={() => handleEditSkill(skill.skill_id)} className="text-blue-500 hover:text-blue-100 hover:bg-blue-500 bg-blue-100">
+                        <FontAwesomeIcon icon={faPenToSquare} /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSkill(skill.skill_id)}
+                        className="text-red-500 hover:text-red-100 hover:bg-red-500 bg-red-100"
+                        aria-label={`Delete ${skill.name}`}
+                      >
+                        <FontAwesomeIcon icon={faTrashAlt} /> Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
