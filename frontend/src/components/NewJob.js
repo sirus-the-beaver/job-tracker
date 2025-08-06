@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// TO_DO: https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255855409
+
 const NewJob = () => {
     const classifications = ['Job', 'Internship'];
     const skills = ['Test', 'Add New Skill'];
@@ -115,7 +117,7 @@ const NewJob = () => {
                 setLoading(false);
             }
         };
-        fetchSkills;
+        fetchSkills();
     }, [token]);
 
     useEffect (() => {
@@ -317,22 +319,10 @@ const NewJob = () => {
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             ></textarea>
                         </div>
-
                         <div>
                             <label htmlFor="skill" className='block text-sm font-medium text-gray-700'>Skill</label>
-                            <select
-                                id="skill" 
-                                isMulti
-                                value={skill} 
-                                onChange={(e) => setSkill(e.target.value)}
-                                className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
-                            >
-                                <option value="Test">Test</option>
-                                <option value="Add New Skill">Add New Skill</option>
-                            </select>
                         </div>
                     </div>
-
                     <div className='flex flex-col sm:flex-row gap-4 justify-end pt-4'>
                         <button type="button" onClick={handleCancel} className='w-full sm:w-auto px-5 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 shadow-sm transition'>Cancel</button>
                         <button type="reset" className='w-full sm:w-auto px-5 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 shadow-sm transition'>Reset</button>
