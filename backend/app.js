@@ -19,8 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/user', userRoutes);
 app.use('/jobs', authMiddleware, jobsRoute);
+<<<<<<< HEAD
 app.use('/skills', skillsRoutes);
 app.use('/contacts', contactsRoutes);
+=======
+app.use('/skills', authMiddleware, skillsRoutes);
+>>>>>>> origin/main
 
 // ########################################
 // ########## LISTENER

@@ -21,6 +21,8 @@ import NewJob from './components/NewJob';
 import NewSkill from './components/NewSkill';
 import NewContact from './components/NewContact';
 import ViewJobs from './components/ViewJobs';
+import EditJob from './components/EditJob';
+import EditSkill from './components/EditSkill';
 
 
 function App() {
@@ -29,14 +31,22 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/new-skill" element={<NewSkill />} />
-        <Route path="/new-contact" element={<NewContact />} />
         
+        {/* Add private routes here */}
         <Route element={<PrivateRoute />}>
-          {/* Add private routes here */}
           <Route path="/" element={<Dashboard />} />
+
+          {/* Jobs */}
           <Route path="/new-job" element={<NewJob />} />
           <Route path="/view-jobs" element={<ViewJobs />} />
+          <Route path="/edit-job/:jobId" element={<EditJob />} />
+
+          {/* Skills */}
+          <Route path="/new-skill" element={<NewSkill />} />
+          <Route path="/edit-skill/:skillId" element={<EditSkill />} />
+
+          {/* Contacts */}
+          <Route path="/new-contact" element={<NewContact />} />
         </Route>
       </Routes>
     </AuthProvider>
