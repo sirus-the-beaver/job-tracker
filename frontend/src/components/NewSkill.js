@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, use } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -20,9 +20,9 @@ const NewSkill = () => {
   const [last_practiced, setLastPracticed] = useState(new Date().toISOString().split('T')[0]);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
 
-  // Fetch existing skills on component mount
+  // Fetch existing skills on component mount and when user adds new skill
   useEffect(() => {
     const fetchSkills = async () => {
       try {
@@ -33,16 +33,14 @@ const NewSkill = () => {
         });
         if (response.status === 200) {
           setSkills(response.data);
-          setLoading(false);
         }
       } catch (error) {
         console.error('Error fetching skills:', error);
         setServerError('Failed to load skills. Please try again later.');
-        setLoading(false);
       }
     };
     fetchSkills();
-  }, [token]);
+  }, [token, success]);
 
   const handleDeleteSkill = (skillId) => {
     setSkills(skills.filter(skill => skill.id !== skillId));
@@ -108,6 +106,7 @@ const NewSkill = () => {
           setDescription('');
           setConfidenceScore(5); 
           setLastPracticed('');
+          setSuccess(true);
         }
       } catch (error) {
           setServerError('Failed to add skill. Please try again later.');
@@ -133,120 +132,134 @@ const NewSkill = () => {
               </div>
           </div>
           )}
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">My Skills</h1>
-        
+          { success && (
+            <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
+                <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
+                    <h2 className='text-lg font-semibold text-green-600'>Submission Successful</h2>
+                    <p className='text-sm text-gray-700'>Your skill has been saved successfully!</p>
+                    <button
+                        onClick={() => setSuccess(false)}
+                        className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
+                    >
+                        Dismiss
+                    </button>
+                </div>
+            </div>
+          )}  
         <div className="space-y-8">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-700 mb-4">Add New Skill</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="skillName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Skill Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="skillName"
-                  value={skillName}
-                  onChange={(e) => setSkillName(e.target.value)}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                    errors.skillName 
-                      ? 'border-red-500 focus:border-red-500' 
-                      : 'border-gray-300 focus:border-blue-500'
-                  }`}
-                  placeholder="e.g., Python, UI/UX Design"
-                />
-                {errors.skillName && (
-                  <p className="text-red-500 text-xs mt-1">{errors.skillName}</p>
-                )}
-              </div>
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="skillName" className="block text-sm font-medium text-gray-700 mb-1">
+                    Skill Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="skillName"
+                    value={skillName}
+                    onChange={(e) => setSkillName(e.target.value)}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                      errors.skillName 
+                        ? 'border-red-500 focus:border-red-500' 
+                        : 'border-gray-300 focus:border-blue-500'
+                    }`}
+                    placeholder="e.g., Python, UI/UX Design"
+                  />
+                  {errors.skillName && (
+                    <p className="text-red-500 text-xs mt-1">{errors.skillName}</p>
+                  )}
+                </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                    errors.description 
-                      ? 'border-red-500 focus:border-red-500' 
-                      : 'border-gray-300 focus:border-blue-500'
-                  }`}
-                  placeholder="Describe your experience with this skill"
-                  rows="3"
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-xs mt-1">{errors.description}</p>
-                )}
-              </div>
+                <div>
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className={`resize-none w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                      errors.description 
+                        ? 'border-red-500 focus:border-red-500' 
+                        : 'border-gray-300 focus:border-blue-500'
+                    }`}
+                    placeholder="Describe your experience with this skill"
+                    rows="2"
+                  />
+                  {errors.description && (
+                    <p className="text-red-500 text-xs mt-1">{errors.description}</p>
+                  )}
+                </div>
 
-              <div>
-                <label htmlFor="proficiency" className="block text-sm font-medium text-gray-700 mb-1">
-                  Proficiency Level
-                </label>
-                <select
-                  id="proficiency"
-                  value={proficiency}
-                  onChange={(e) => setProficiency(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:outline-none focus:border-blue-500"
+                <div>
+                  <label htmlFor="proficiency" className="block text-sm font-medium text-gray-700 mb-1">
+                    Proficiency Level
+                  </label>
+                  <select
+                    id="proficiency"
+                    value={proficiency}
+                    onChange={(e) => setProficiency(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="confidence" className="block text-sm font-medium text-gray-700 mb-1">
+                    Confidence Score (1-10) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="confidence_score"
+                    value={confidence_score}
+                    onChange={(e) => setConfidenceScore(Number(e.target.value).toString())}
+                    min="1" 
+                    max="10" 
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                      errors.confidence 
+                        ? 'border-red-500 focus:border-red-500' 
+                        : 'border-gray-300 focus:border-blue-500'
+                    }`}
+                  />
+                  {errors.confidence && (
+                    <p className="text-red-500 text-xs mt-1">{errors.confidence}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="lastPracticed" className="block text-sm font-medium text-gray-700 mb-1">
+                    Last Practiced <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="last_practiced"
+                    value={last_practiced}
+                    onChange={(e) => setLastPracticed(e.target.value)}
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                      errors.lastPracticed 
+                        ? 'border-red-500 focus:border-red-500' 
+                        : 'border-gray-300 focus:border-blue-500'
+                    }`}
+                  />
+                  {errors.lastPracticed && (
+                    <p className="text-red-500 text-xs mt-1">{errors.lastPracticed}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
                 >
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                  <option value="Expert">Expert</option>
-                </select>
+                  <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
+                  Add Skill
+                </button>
               </div>
-
-              <div>
-                <label htmlFor="confidence" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confidence Score (1-10) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  id="confidence_score"
-                  value={confidence_score}
-                  onChange={(e) => setConfidenceScore(Number(e.target.value))}
-                  min="1" 
-                  max="10" 
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                    errors.confidence 
-                      ? 'border-red-500 focus:border-red-500' 
-                      : 'border-gray-300 focus:border-blue-500'
-                  }`}
-                />
-                {errors.confidence && (
-                  <p className="text-red-500 text-xs mt-1">{errors.confidence}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="lastPracticed" className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Practiced <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  id="last_practiced"
-                  value={last_practiced}
-                  onChange={(e) => setLastPracticed(e.target.value)}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                    errors.lastPracticed 
-                      ? 'border-red-500 focus:border-red-500' 
-                      : 'border-gray-300 focus:border-blue-500'
-                  }`}
-                />
-                {errors.lastPracticed && (
-                  <p className="text-red-500 text-xs mt-1">{errors.lastPracticed}</p>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
-              >
-                <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
-                Add Skill
-              </button>
             </form>
           </div>
 
@@ -267,10 +280,10 @@ const NewSkill = () => {
                         Proficiency: <span className="font-medium">{skill.proficiency}</span>
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
-                        Confidence: <span className="font-medium">{skill.confidence}/10</span>
+                        Confidence: <span className="font-medium">{skill.confidence_score}/10</span>
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
-                        Last practiced: <span className="font-medium">{new Date(skill.lastPracticed).toLocaleDateString()}</span>
+                        Last practiced: <span className="font-medium">{new Date(skill.last_practiced).toLocaleDateString()}</span>
                       </p>
                       {skill.description && (
                         <p className="text-sm text-gray-600 mt-1 italic">
