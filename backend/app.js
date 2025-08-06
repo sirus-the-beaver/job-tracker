@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const contactsRoutes = require('./routes/api/contactsRoutes');
 const jobsRoute = require('./routes/api/jobsRoutes');
 const userRoutes = require('./routes/api/userRoutes');
 const skillsRoutes = require('./routes/api/skillsRoutes');
@@ -18,7 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use('/user', userRoutes);
 app.use('/jobs', authMiddleware, jobsRoute);
+<<<<<<< HEAD
+app.use('/skills', skillsRoutes);
+app.use('/contacts', contactsRoutes);
+=======
 app.use('/skills', authMiddleware, skillsRoutes);
+>>>>>>> origin/main
 
 // ########################################
 // ########## LISTENER

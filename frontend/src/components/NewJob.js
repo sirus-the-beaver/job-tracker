@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// TO_DO: https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255855409
+
 const NewJob = () => {
     const classifications = ['Job', 'Internship'];
+    const skills = ['Test', 'Add New Skill'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
     const tiers = ['Dream Position', 'Good Fit', 'Backup'];
 
@@ -18,9 +21,12 @@ const NewJob = () => {
     const [salaryMax, setSalaryMax] = useState('');
     const [dateApplied, setDateApplied] = useState(null);
     const [link, setLink] = useState('');
+    const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState('');
+    const [skill, setSkill] = useState(skills[0]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
+    const token = localStorage.getItem('token');
 
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
@@ -86,6 +92,7 @@ const NewJob = () => {
         setSalaryMax('');
         setLink('');
         setNotes('');
+        setSkill(skills[0]);
         setDateApplied(null);
         setError('');
     };
@@ -93,6 +100,31 @@ const NewJob = () => {
     const handleCancel = () => {
         navigate('/');
     };
+
+    useEffect(() => {
+        const fetchSkills = async () => {
+            try {
+                const response = await axios.get('http://localhost:5045/skills', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setSkill(response.data);
+            } catch (err) {
+                console.error('Error fetching skills:', err);
+                setError('Failed to load skills. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSkills();
+    }, [token]);
+
+    useEffect (() => {
+        if (skill === 'Add New Skill') {
+            navigate('/new-skill');
+        }
+    }, [skill]);
 
     useEffect(() => {
         if (status !== 'Interested') {
@@ -287,8 +319,10 @@ const NewJob = () => {
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             ></textarea>
                         </div>
+                        <div>
+                            <label htmlFor="skill" className='block text-sm font-medium text-gray-700'>Skill</label>
+                        </div>
                     </div>
-
                     <div className='flex flex-col sm:flex-row gap-4 justify-end pt-4'>
                         <button type="button" onClick={handleCancel} className='w-full sm:w-auto px-5 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 shadow-sm transition'>Cancel</button>
                         <button type="reset" className='w-full sm:w-auto px-5 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 shadow-sm transition'>Reset</button>
