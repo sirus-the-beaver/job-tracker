@@ -103,19 +103,19 @@ const NewJob = () => {
     // Fetch existing skills on component mount and when user adds new skill
     useEffect(() => {
         const fetchSkills = async () => {
-        try {
-            const response = await axios.get('http://localhost:5045/skills', {
-            headers: {
-                Authorization: `Bearer ${token}`
+            try {
+                const response = await axios.get('http://localhost:5045/skills', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+                });
+                if (response.status === 200) {
+                setSkills(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching skills:', error);
+                setServerError('Failed to load skills. Please try again later.');
             }
-            });
-            if (response.status === 200) {
-            setSkills(response.data);
-            }
-        } catch (error) {
-            console.error('Error fetching skills:', error);
-            setServerError('Failed to load skills. Please try again later.');
-        }
         };
         fetchSkills();
     }, [token, success]);
