@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     const { first_name, last_name, email, phone, position, notes } = req.body;
     try {
         // Insert new contact into the database
-        await db.query('INSERT INTO contacts (user_id, first_name, last_name, email, phone, position, notes) VALUES (?, ?, ?, ?, ?, ?)', [
+        await db.query('INSERT INTO contacts (user_id, first_name, last_name, email, phone, position, notes) VALUES (?, ?, ?, ?, ?, ?, ?)', [
             user_id,
             first_name,
             last_name,
