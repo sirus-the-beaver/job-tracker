@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// TO_DO: https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255855409
+const EditJob = () => {
+    const navigate = useNavigate();
+    const { jobId } = useParams();
+    const token = localStorage.getItem('token');
 
-const NewJob = () => {
     const classifications = ['Job', 'Internship'];
-    const skills = ['Test', 'Add New Skill'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
     const tiers = ['Dream Position', 'Good Fit', 'Backup'];
 
@@ -21,14 +22,9 @@ const NewJob = () => {
     const [salaryMax, setSalaryMax] = useState('');
     const [dateApplied, setDateApplied] = useState(null);
     const [link, setLink] = useState('');
-    const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState('');
-    const [skill, setSkill] = useState(skills[0]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
-
-    const navigate = useNavigate();
-    const token = localStorage.getItem('token');
 
     const validateInput = (input) => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;
@@ -37,16 +33,10 @@ const NewJob = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!positionTitle || !company) {
-            setError('Please fill in all required fields.');
+        if (!validateInput(positionTitle) || !validateInput(company) || !validateInput(city) || !validateInput(state)) {
+            setError('Invalid input. Please check your entries.');
             return;
         }
-
-        if (!validateInput(positionTitle) || !validateInput(company) || !validateInput(city) || !validateInput(state) || !validateInput(notes)) {
-            setError('Invalid characters in input fields. Please use alphanumeric characters only.');
-            return;
-        }
-        setError('');
 
         const jobData = {
             classification,
@@ -59,80 +49,62 @@ const NewJob = () => {
             salary_min: salaryMin || null,
             salary_max: salaryMax || null,
             application_date: dateApplied || null,
-            notes: notes || null,
-            link: link || null
+            link: link || null,
+            notes: notes || null
         };
+
         try {
-            const response = await axios.post('http://localhost:5045/jobs', jobData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
+            const response = await axios.put(`http://localhost:5045/jobs/${jobId}`, jobData,
+                {
+                    headers: { Authorization: `Bearer ${token}` }
                 }
-            });
-            if (response.status === 201) {
+            );
+            if (response.status === 204) {
                 setSuccess(true);
-                handleReset();
             }
         } catch (error) {
-            setError('Failed to submit job application. Please try again later.');
-            return;
+            setError('Failed to update job. Please try again.');
         }
-    };
-
-    const handleReset = () => {
-        setClassification(classifications[0]);
-        setPositionTitle('');
-        setCompany('');
-        setCity('');
-        setState('');
-        setStatus(statuses[0]);
-        setTier(tiers[0]);
-        setSalaryMin('');
-        setSalaryMax('');
-        setLink('');
-        setNotes('');
-        setSkill(skills[0]);
-        setDateApplied(null);
-        setError('');
     };
 
     const handleCancel = () => {
-        navigate('/');
+        navigate('/view-jobs');
     };
 
     useEffect(() => {
-        const fetchSkills = async () => {
+        const fetchJob = async () => {
             try {
-                const response = await axios.get('http://localhost:5045/skills', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                const response = await axios.get(`http://localhost:5045/jobs/${jobId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                setSkill(response.data);
-            } catch (err) {
-                console.error('Error fetching skills:', err);
-                setError('Failed to load skills. Please try again later.');
-            } finally {
-                setLoading(false);
+                const job = response.data;
+                setClassification(job.classification);
+                setPositionTitle(job.positionTitle);
+                setCompany(job.company);
+                setCity(job.city || '');
+                setState(job.state || '');
+                setStatus(job.status);
+                setTier(job.tier);
+                setSalaryMin(job.salary_min || '');
+                setSalaryMax(job.salary_max || '');
+                setDateApplied(job.application_date ? new Date(job.application_date).toISOString().split('T')[0] : '');
+                setLink(job.link || '');
+                setNotes(job.notes || '');
+            } catch (error) {
+                console.error('Error fetching job:', error);
             }
         };
-        fetchSkills();
-    }, [token]);
-
-    useEffect (() => {
-        if (skill === 'Add New Skill') {
-            navigate('/new-skill');
-        }
-    }, [skill]);
+        fetchJob();
+    }, [jobId, token]);
 
     useEffect(() => {
-        if (status !== 'Interested') {
+        if (status !== 'interested') {
             setDateApplied(new Date().toISOString().split('T')[0]);
         }
     }, [status]);
 
     return (
-        <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10'>
+        <div>
             {error && (
                 <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
                     <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
@@ -147,27 +119,28 @@ const NewJob = () => {
                     </div>
                 </div>
             )}
-            { success && (
+            {success && (
                 <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
                     <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
                         <h2 className='text-lg font-semibold text-green-600'>Submission Successful</h2>
-                        <p className='text-sm text-gray-700'>Your job application has been submitted successfully!</p>
+                        <p className='text-sm text-gray-700'>Your job application has been updated successfully!</p>
                         <button
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/view-jobs')}
                             className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
                         >
-                            Go to Dashboard
+                            Go back to view jobs
                         </button>
                     </div>
                 </div>
             )}
+
             <div className='bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden'>
                 <div className='bg-gradient-to-r from-blue-600 to-indigo-500 px-6 py-4'>
-                    <h1 className='text-xl sm:text-2xl font-semibold text-white'>New application</h1>
-                    <p className='text-sm text-blue-100'>Please enter application details below</p>
+                    <h1 className='text-xl sm:text-2xl font-semibold text-white'>Edit application</h1>
+                    <p className='text-sm text-blue-100'>Please update application details below</p>
                 </div>
 
-                <form onSubmit={handleSubmit} onReset={handleReset} className='p-6 space-y-6'>
+                <form onSubmit={handleSubmit} className='p-6 space-y-6'>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         <div>
                             <label htmlFor="classification" className='block text-sm font-medium text-gray-700'>Classification</label>
@@ -214,11 +187,11 @@ const NewJob = () => {
                                 onChange={(e) => setStatus(e.target.value)}
                                 className='mt-1 w-full border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             >
-                                <option value="Interested">Interested</option>
-                                <option value="Applied">Applied</option>
-                                <option value="Interviewing">Interviewing</option>
-                                <option value="Offer">Offer</option>
-                                <option value="Rejected">Rejected</option>
+                                <option value="interested">Interested</option>
+                                <option value="applied">Applied</option>
+                                <option value="interviewing">Interviewing</option>
+                                <option value="offer">Offer</option>
+                                <option value="rejected">Rejected</option>
                             </select>
                         </div>
 
@@ -280,7 +253,7 @@ const NewJob = () => {
                             />
                         </div>
 
-                        {status !== 'Interested' && 
+                        {status !== 'interested' && 
                         (
                             <div>
                                 <label htmlFor="dateApplied" className='block text-sm font-medium text-gray-700'>Date Applied</label>
@@ -318,13 +291,10 @@ const NewJob = () => {
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             ></textarea>
                         </div>
-                        <div>
-                            <label htmlFor="skill" className='block text-sm font-medium text-gray-700'>Skill</label>
-                        </div>
                     </div>
+
                     <div className='flex flex-col sm:flex-row gap-4 justify-end pt-4'>
                         <button type="button" onClick={handleCancel} className='w-full sm:w-auto px-5 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 shadow-sm transition'>Cancel</button>
-                        <button type="reset" className='w-full sm:w-auto px-5 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 shadow-sm transition'>Reset</button>
                         <button type="submit" className='w-full sm:w-auto px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-md transition'>Submit</button>
                     </div>
                 </form>
@@ -333,4 +303,4 @@ const NewJob = () => {
     )
 };
 
-export default NewJob;
+export default EditJob;
