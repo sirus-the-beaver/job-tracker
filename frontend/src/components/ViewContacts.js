@@ -46,7 +46,7 @@ const ViewContacts = () => {
     };
 
     const handleEditContact = (contactId) => {
-        // navigate(`/edit-contact/${contactId}`);
+        navigate(`/edit-contact/${contactId}`);
     };
 
     return (
