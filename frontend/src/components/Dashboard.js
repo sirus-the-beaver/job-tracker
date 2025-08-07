@@ -6,10 +6,7 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faBriefcase, faChartLine, faSignOutAlt, faPlus,
-  faCheckCircle, faClock, faSearch
-} from '@fortawesome/free-solid-svg-icons';
+import { faBriefcase, faChartLine, faSignOutAlt, faPlus, faCheckCircle, faClock, faSearch, faBuilding, faHouse, faAddressBook, faCode } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../contexts/AuthContext';
 
 const dashboardStats = {
@@ -83,18 +80,70 @@ const Dashboard = () => {
           <nav className="p-4 space-y-1">
             <a 
               href="/" 
-              className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 transition-colors"
+              className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-700 text-white transition-colors"
             >
-              <FontAwesomeIcon icon={faChartLine} className="mr-3 h-5 w-5" />
+              <FontAwesomeIcon icon={faHouse} className="mr-3 h-5 w-5" />
               Dashboard
             </a>
-            <a
-              href="/view-jobs"
-              className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <FontAwesomeIcon icon={faBriefcase} className="mr-3 h-5 w-5" />
-              View Jobs
-            </a>
+            <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start">
+                <h2 className="text-xs font-semibold text-gray-500 uppercase mb-2 mt-4"><FontAwesomeIcon icon={faBuilding} /> Applications</h2>
+                <ul className="space-y-4 flex flex-col">
+                  <li>
+                    <a
+                      href="/new-job"
+                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
+                    >
+                      Add New Application
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/view-jobs"
+                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700" 
+                    >
+                      View Applications
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex flex-col items-start">
+                <h2 className="text-xs font-semibold text-gray-500 uppercase mb-2 mt-4"><FontAwesomeIcon icon={faCode} /> Skills</h2>
+                <ul className="space-y-4 flex flex-col">
+                  <li>
+                    <a
+                      href="/new-skill"
+                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
+                    >
+                      Add New Skill
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex flex-col items-start">
+                <h2 className="text-xs font-semibold text-gray-500 uppercase mb-2 mt-4"><FontAwesomeIcon icon={faAddressBook} /> Contacts</h2>
+                <ul className="space-y-4 flex flex-col">
+                  <li>
+                    <a
+                      href="/new-contact"
+                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
+                    >
+                      Add New Contact
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/view-contacts"
+                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
+                    >
+                      View Contacts
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </nav>
         </aside>
 

@@ -66,7 +66,6 @@ const Signup = () => {
                 }
             );
             setSuccess(true);
-            setUser('');
             setPwd('');
             setMatchPwd('');
         } catch (err) {
