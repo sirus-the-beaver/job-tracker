@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const NewContact = () => {
     const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -11,6 +13,7 @@ const NewContact = () => {
     const [position, setPosition] = useState('');
     const [notes, setNotes] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
 
     const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const PHONE_REGEX = /^\+?[0-9\s-]+$/;
@@ -41,23 +44,7 @@ const NewContact = () => {
             setError('Notes must contain only letters.');
             return false;
         };
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateInput()) {
-            return;
-        }
-        setError('');
-        const newContact = {
-            firstName,
-            lastName,
-            email,
-            phone,
-            position,
-            notes
-        };
-        // TO_DO: Send newContact to the backend API
+        return true;
     };
 
     const handleReset = () => {
@@ -68,6 +55,41 @@ const NewContact = () => {
         setPosition('');
         setNotes('');
         setError('');
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validateInput()) {
+            console.error(error)
+            return;
+        }
+        setError('');
+        const newContact = {
+            first_name: firstName,
+            last_name: lastName,
+            email: email || null,
+            phone: phone || null,
+            position: position || null,
+            notes: notes || null
+        };
+        
+        try {
+            const response = await axios.post('http://localhost:5045/contacts', newContact, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (response.status === 201) {
+                setSuccess(true);
+                handleReset();
+            } else {
+                setError('Failed to create contact. Please try again.');
+            }
+        } catch (err) {
+            console.error('Error creating contact:', err);
+            setError(err.response?.data?.message || 'Failed to create contact. Please try again.');
+        }
     };
 
     const handleCancel = () => {
@@ -87,6 +109,20 @@ const NewContact = () => {
                             className='mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition'
                         >
                             Dismiss
+                        </button>
+                    </div>
+                </div>
+            )}
+            {success && (
+                <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
+                    <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
+                        <h2 className='text-lg font-semibold text-green-600'>Submission Successful</h2>
+                        <p className='text-sm text-gray-700'>Your contact has been added successfully!</p>
+                        <button
+                            onClick={() => navigate('/')}
+                            className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
+                        >
+                            Go to Dashboard
                         </button>
                     </div>
                 </div>
