@@ -23,6 +23,8 @@ import NewContact from './components/NewContact';
 import ViewJobs from './components/ViewJobs';
 import EditJob from './components/EditJob';
 import EditSkill from './components/EditSkill';
+import ViewContacts from './components/ViewContacts';
+import EditContact from './components/EditContact';
 
 
 function App() {
@@ -47,6 +49,8 @@ function App() {
 
           {/* Contacts */}
           <Route path="/new-contact" element={<NewContact />} />
+          <Route path="/view-contacts" element={<ViewContacts />} />
+          <Route path="/edit-contact/:contactId" element={<EditContact />} />
         </Route>
       </Routes>
     </AuthProvider>

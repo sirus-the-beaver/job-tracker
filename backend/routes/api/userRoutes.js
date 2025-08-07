@@ -43,11 +43,24 @@ router.post('/login', async (req, res) => {
 
         // Create a JWT token
         const token = jwt.sign({ user_id: userData.user_id, email: userData.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token });
+        const refreshToken = jwt.sign({ user_id: userData.user_id, email: userData.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+        res.status(200).json({ token, refreshToken });
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ message: 'Internal server error.' });
     }
-})
+});
+
+router.post('/refresh-token', (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Refresh token is required.' });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const newToken = jwt.sign({ user_id: decoded.user_id, email: decoded.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const newRefreshToken = jwt.sign({ user_id: decoded.user_id, email: decoded.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+    res.status(200).json({ token: newToken, refreshToken: newRefreshToken });
+});
 
 module.exports = router;

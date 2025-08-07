@@ -15,6 +15,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET a specific resource by ID (e.g., get a specific contact by contact_id)
+router.get('/:contact_id', async (req, res) => {
+    const user_id = req.user.user_id;
+    const contact_id = req.params.contact_id;
+    try {
+        const contact = await db.query('SELECT * FROM contacts WHERE contact_id = ? AND user_id = ?', [contact_id, user_id]);
+        if (contact[0].length === 0) {
+            return res.status(404).send('Contact not found');
+        }
+        res.send(contact[0][0]);
+    } catch (err) {
+        console.error('Error getting contact by ID:', err);
+        res.status(500).send('Query error');
+    }
+});
+
 // POST: create a new resource (e.g., add a new contact to the database)
 // POST route should receive data payload from frontend and store in DB
 router.post('/', async (req, res) => {
@@ -22,7 +38,7 @@ router.post('/', async (req, res) => {
     const { first_name, last_name, email, phone, position, notes } = req.body;
     try {
         // Insert new contact into the database
-        await db.query('INSERT INTO contacts (user_id, first_name, last_name, email, phone, position, notes) VALUES (?, ?, ?, ?, ?, ?)', [
+        await db.query('INSERT INTO contacts (user_id, first_name, last_name, email, phone, position, notes) VALUES (?, ?, ?, ?, ?, ?, ?)', [
             user_id,
             first_name,
             last_name,

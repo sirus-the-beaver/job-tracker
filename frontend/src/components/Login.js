@@ -134,9 +134,6 @@ const Login = () => {
                             <FontAwesomeIcon icon={faUserPlus} className="mr-1" /> Sign Up
                         </button>
                     </p>
-                    <p className="mt-3 text-sm">
-                        <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">Forgot your password?</a>
-                    </p>
                 </div>
             </div>
         </div>
