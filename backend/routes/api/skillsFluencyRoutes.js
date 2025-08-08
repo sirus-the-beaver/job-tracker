@@ -15,31 +15,6 @@ router.get('/:skill_id', async (req, res) => {
     }
 });
 
-// GET a single skill by skill_id
-router.get('/:skill_id', async (req, res) => {
-    const user_id = req.user.user_id;
-    const skill_id = req.params.skill_id;
-    const job_id = req.params.job_id;
-    try {
-        // Fetch skill by skill_id for the authenticated user
-        const skillQuery = await db.query('SELECT * FROM skills WHERE skill_id = ? AND user_id = ?', [skill_id, user_id]);
-        const jobSkillQuery = await db.query('SELECT * FROM jobs_skills WHERE skill_id = ? AND job_id = ?', [skill_id, job_id]);
-
-        const skill = skillQuery[0][0];
-        const jobSkill = jobSkillQuery[0][0];
-
-        // Combine data into a single object
-        const result = {
-            ...skill,
-            proficiency_required: jobSkill ? jobSkill.proficiency_required : null,
-        };
-        res.status(200).send(result);
-    } catch (err) {
-        console.error('Error fetching job skill:', err);
-        res.status(500).send('Error fetching job skill');
-    }
-});
-
 // GET how frequently certain skills are noted within job applications
 router.get('/skill-frequency', async (req, res) => {
     const user_id = req.user.user_id;
