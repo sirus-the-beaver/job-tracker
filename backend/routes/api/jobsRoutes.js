@@ -102,7 +102,7 @@ router.post('/', async (req, res) => {
 router.put('/:job_id', async (req, res) => {
     const user_id = req.user.user_id;
     const { job_id } = req.params;
-    const { positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link, skills } = req.body;
+    const { positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
     try {
         await db.query('UPDATE jobs SET positionTitle = ?, company = ?, city = ?, state = ?, status = ?, salary_min = ?, salary_max = ?, application_date = ?, notes = ?, classification = ?, tier = ?, link = ? WHERE job_id = ? AND user_id = ?',  [
             positionTitle,
@@ -120,20 +120,6 @@ router.put('/:job_id', async (req, res) => {
             job_id,
             user_id,
         ]);
-        // Delete existing skills for the job
-        await db.query('DELETE FROM jobs_skills WHERE job_id = ?', [job_id]);
-        // Insert new skills for the job
-        if (skills.length > 0) {
-            for (const skill of skills) {
-                const skill_id = skill.skill_id;
-                const proficiency_required = skill.proficiency_required === 'unknown' ? null : skill.proficiency_required;
-                await db.query('INSERT INTO jobs_skills (job_id, skill_id, proficiency_required) VALUES (?, ?, ?)', [
-                    job_id,
-                    skill_id,
-                    proficiency_required,
-                ]);
-            }
-        }
         res.status(204).send('Update succeeded');
     } catch (err) {
         console.error('Error while updating a preexisting job:', err);
