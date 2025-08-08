@@ -45,9 +45,10 @@ router.get('/:skill_id', async (req, res) => {
 
 // GET how frequently certain skills are noted within job applications
 router.get('/:skill_id', async (req, res) => {
+    const user_id = req.user.user_id;
     try {
         // This tells you how "in-demand" each skill is across all job applications
-        const skillFrequencyQuery = await db.query('SELECT s.skill_id, s.name AS skill_name, COUNT(js.job_id) AS frequency_in_applications FROM skills s JOIN jobs_skills js ON s.skill_id = js.skill_id GROUP BY s.skill_id, s.name ORDER BY frequency_in_applications DESC;');
+        const skillFrequencyQuery = await db.query('SELECT s.skill_id, s.name AS skill_name, COUNT(js.job_id) AS frequency_in_applications FROM skills s JOIN jobs_skills js ON s.skill_id = js.skill_id WHERE s.user_id = ? GROUP BY s.skill_id, s.name ORDER BY frequency_in_applications DESC;', [user_id]);
         res.send(skillFrequencyQuery);
     } catch (err) {
         console.error('Error fetching skill frequencies:', err);
