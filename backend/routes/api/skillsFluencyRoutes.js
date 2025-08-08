@@ -21,7 +21,7 @@ router.get('/skill-comfort', async (req, res) => {
     try {
         // This identifies skills the user should work on
         const skillComfortQuery = await db.query('SELECT s.skill_id, s.name AS skill_name, us.proficiency, us.confidence_score, us.last_practiced FROM users_skills us JOIN skills s ON us.skill_id = s.skill_id WHERE us.user_id = ? AND (us.confidence_score <5 OR us.last_practiced < CURDATE() - INTERVAL 30 DAY) ORDER BY us.confidence_score ASC', [user_id]);
-        res.send(skillComfortQuery);
+        res.send(skillComfortQuery[0]);
     } catch (err) {
         console.error('Error fetching skills to work on:', err);
         res.status(500).send('Error fetching skill to work on');
