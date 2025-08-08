@@ -2,19 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../database/db-connector.js');
 
-// GET a specific resource (e.g., get all of the skills a user has added to their skill list)
-// GET route should basically return all of the skills that a user has added to their skill list
-router.get('/:skill_id', async (req, res) => {
-    const user_id = req.user.user_id;
-    try {
-        const userJobSkillsQuery = await db.query('SELECT * FROM skills WHERE user_id = ?', [user_id]);
-        res.send(userJobSkillsQuery[0]);
-    } catch (err) {
-        console.error('Error getting users skills:', err);
-        res.status(500).send('Query error');
-    }
-});
-
 // GET how frequently certain skills are noted within job applications
 router.get('/skill-frequency', async (req, res) => {
     const user_id = req.user.user_id;
