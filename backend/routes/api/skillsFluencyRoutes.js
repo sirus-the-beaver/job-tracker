@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../database/db-connector.js');
-const jobsRoute = require('./routes/api/jobsRoutes');
-const skillsRoutes = require('./routes/api/skillsRoutes');
-
-// TO_DO: see https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255822975
 
 // GET a specific resource (e.g., get all of the skills a user has added to their skill list)
 // GET route should basically return all of the skills that a user has added to their skill list
