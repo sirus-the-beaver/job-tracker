@@ -1,3 +1,12 @@
+// Citation for SQL queries:
+// Date: 08/07/2025
+// Source: ChatGPT
+// These SQL queries were generated with the help of ChatGPT
+// The following is the prompt from the GenAI interaction that led to these SQL queries
+// "If I show you my DDL for some tables, can you tell me how I can implement this requirement: 
+// 'see how frequently certain skills are noted within applications, and track how comfortable 
+// they are with those skills/if they need to work on those skills more'"
+
 const express = require('express');
 const router = express.Router();
 const db = require('../../database/db-connector.js');
@@ -15,7 +24,7 @@ router.get('/skill-frequency', async (req, res) => {
     }
 });
 
-// GET how comfortable users are with those skills / if they need to work on those skills more
+// GET returns what skills the user should work on based on confidence level and the date they last practiced skill
 router.get('/skill-comfort', async (req, res) => {
     const user_id = req.user.user_id;
     try {
