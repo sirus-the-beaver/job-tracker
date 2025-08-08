@@ -316,7 +316,7 @@ const NewJob = () => {
                         </div>
                         <div className="space-y-3">
                             <label htmlFor="skillName" className="block text-sm font-medium text-gray-700 mb-1">
-                                Skills Required for Position <span className="text-red-500">*</span>
+                                Skills Required for Position
                             </label>
                             {skills.map((skill) => (
                             <div
@@ -324,7 +324,7 @@ const NewJob = () => {
                                 className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 <label>
-                                    <input type="checkbox" />
+                                    <input type="checkbox" className="mr-1" />
                                     {skill.name}
                                 </label>
                             </div>
