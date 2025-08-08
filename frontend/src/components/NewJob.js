@@ -315,6 +315,9 @@ const NewJob = () => {
                             ></textarea>
                         </div>
                         <div className="space-y-3">
+                            <label htmlFor="skillName" className="block text-sm font-medium text-gray-700 mb-1">
+                                Skills Required for Position <span className="text-red-500">*</span>
+                            </label>
                             {skills.map((skill) => (
                             <div
                                 key={skill.skill_id}
@@ -324,16 +327,16 @@ const NewJob = () => {
                                     <input type="checkbox" />
                                     {skill.name}
                                 </label>
-                                <div className="flex justify-center gap-2">
-                                    <button
-                                        onClick={() => navigate('/new-job')}
-                                        className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
-                                    >
-                                        Add Skill
-                                    </button>
-                                </div>
                             </div>
                             ))}
+                            <div className="flex justify-center gap-2">
+                                <button
+                                    onClick={() => navigate('/new-skill')}
+                                    className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
+                                >
+                                    Add New Skill
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className='flex flex-col sm:flex-row gap-4 justify-end pt-4'>
