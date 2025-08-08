@@ -19,12 +19,6 @@ import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
 import NewJob from './components/NewJob';
 import NewSkill from './components/NewSkill';
-import NewContact from './components/NewContact';
-import ViewJobs from './components/ViewJobs';
-import EditJob from './components/EditJob';
-import EditSkill from './components/EditSkill';
-import SkillFluency from './components/skillFluency';
-
 
 
 
@@ -34,23 +28,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        
-        {/* Add private routes here */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/new-job" element={<NewJob />} />
+        <Route path="/new-skill" element={<NewSkill />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Dashboard />} />
-
-          {/* Jobs */}
-          <Route path="/new-job" element={<NewJob />} />
-          <Route path="/view-jobs" element={<ViewJobs />} />
-          <Route path="/edit-job/:jobId" element={<EditJob />} />
-
-          {/* Skills */}
-          <Route path="/new-skill" element={<NewSkill />} />
-          <Route path="/skillFluency" element={<SkillFluency />} />
-          <Route path="/edit-skill/:skillId" element={<EditSkill />} />
-
-          {/* Contacts */}
-          <Route path="/new-contact" element={<NewContact />} />
+          {/* Add private routes here */}
         </Route>
       </Routes>
     </AuthProvider>

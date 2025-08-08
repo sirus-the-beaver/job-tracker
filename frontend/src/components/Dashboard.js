@@ -6,7 +6,6 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 import { 
   faBriefcase, faChartLine, faSignOutAlt, faPlus,
   faCheckCircle, faClock, faSearch
@@ -83,30 +82,11 @@ const Dashboard = () => {
         <aside className="w-64 bg-white border-r border-gray-200 shadow-sm hidden md:block">
           <nav className="p-4 space-y-1">
             <a 
-              href="/" 
+              href="/dashboard" 
               className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 transition-colors"
             >
               <FontAwesomeIcon icon={faChartLine} className="mr-3 h-5 w-5" />
               Dashboard
-            </a>
-            <a
-              href="/view-jobs"
-              className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <FontAwesomeIcon icon={faBriefcase} className="mr-3 h-5 w-5" />
-              View Jobs
-            </a>
-            <a
-              href="/skillFluency"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 ease-in-out"
-              aria-label="View skill fluency dashboard"
-            >
-              <FontAwesomeIcon 
-                icon={faGraduationCap}  // Skill/education related icon
-                className="h-5 w-5 flex-shrink-0 text-gray-500 hover:text-gray-700 transition-colors" 
-                aria-hidden="true"
-              />
-              View Skill Fluency
             </a>
           </nav>
         </aside>

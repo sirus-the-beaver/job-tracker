@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
     // Get the token from the Authorization header
     const token = req.header('Authorization')?.split(' ')[1];
     // If no token is provided, return an error response
@@ -16,5 +16,3 @@ const verifyToken = (req, res, next) => {
         res.status(400).json({ error: "Invalid token" });
     }
 };
-
-module.exports = verifyToken;
