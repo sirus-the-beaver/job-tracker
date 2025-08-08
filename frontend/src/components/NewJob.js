@@ -121,12 +121,6 @@ const NewJob = () => {
         fetchSkills();
     }, [token]);
 
-    useEffect (() => {
-        if (skill === 'Add New Skill') {
-            navigate('/new-skill');
-        }
-    }, [skill]);
-
     useEffect(() => {
         if (status !== 'Interested') {
             setDateApplied(new Date().toISOString().split('T')[0]);
