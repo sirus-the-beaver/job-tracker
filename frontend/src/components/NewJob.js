@@ -6,7 +6,6 @@ import axios from 'axios';
 
 const NewJob = () => {
     const classifications = ['Job', 'Internship'];
-    const skills = ['Test', 'Add New Skill'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
     const tiers = ['Dream Position', 'Good Fit', 'Backup'];
 
@@ -23,7 +22,7 @@ const NewJob = () => {
     const [link, setLink] = useState('');
     const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState('');
-    const [skill, setSkill] = useState(skills[0]);
+    const [skills, setSkills] = useState([]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
 
@@ -91,7 +90,7 @@ const NewJob = () => {
         setSalaryMax('');
         setLink('');
         setNotes('');
-        setSkill(skills[0]);
+        setSkills([]);
         setDateApplied(null);
         setError('');
     };
@@ -100,6 +99,7 @@ const NewJob = () => {
         navigate('/');
     };
 
+    //  Fetch existing skills on component mount
     useEffect(() => {
         const fetchSkills = async () => {
             try {
@@ -108,7 +108,9 @@ const NewJob = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setSkill(response.data);
+                if (response.status === 200) {
+                    setSkills(response.data);
+                }
             } catch (err) {
                 console.error('Error fetching skills:', err);
                 setError('Failed to load skills. Please try again later.');
@@ -318,8 +320,26 @@ const NewJob = () => {
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             ></textarea>
                         </div>
-                        <div>
-                            <label htmlFor="skill" className='block text-sm font-medium text-gray-700'>Skill</label>
+                        <div className="space-y-3">
+                            {skills.map((skill) => (
+                            <div
+                                key={skill.skill_id}
+                                className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                                <label>
+                                    <input type="checkbox" />
+                                    {skill.name}
+                                </label>
+                                <div className="flex justify-center gap-2">
+                                    <button
+                                        onClick={() => navigate('/new-job')}
+                                        className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition'
+                                    >
+                                        Add Skill
+                                    </button>
+                                </div>
+                            </div>
+                            ))}
                         </div>
                     </div>
                     <div className='flex flex-col sm:flex-row gap-4 justify-end pt-4'>
