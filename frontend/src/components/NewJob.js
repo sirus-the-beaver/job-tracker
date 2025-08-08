@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// TO_DO: https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255855409
-
 const NewJob = () => {
     const classifications = ['Job', 'Internship'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
@@ -23,6 +21,7 @@ const NewJob = () => {
     const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState('');
     const [skills, setSkills] = useState([]);
+    const [selectedSkills, setSelectedSkills] = useState([]);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
 
@@ -33,6 +32,16 @@ const NewJob = () => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;
         return regex.test(input) || input === '';
     }
+
+    const handleCheckboxChange = (skillId) => {
+        setSelectedSkills((prevSelected) => {
+            if (prevSelected.includes(skillId)) {
+                return prevSelected.filter(id => id !== skillId);
+            } else {
+                return [...prevSelected, skillId];
+            }
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,8 +68,11 @@ const NewJob = () => {
             salary_max: salaryMax || null,
             application_date: dateApplied || null,
             notes: notes || null,
-            link: link || null
+            link: link || null,
+            skills: selectedSkills.map(skillId => ({ skill_id: skillId }))
         };
+
+        console.log('Submitting job data:', jobData);
         try {
             const response = await axios.post('http://localhost:5045/jobs', jobData, {
                 headers: {
@@ -314,17 +326,25 @@ const NewJob = () => {
                                 className='mt-1 w-full resize-none border border-gray-300 rounded-lg bg-gray-50 p-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition'
                             ></textarea>
                         </div>
-                        <div className="space-y-3">
-                            <label htmlFor="skillName" className="block text-sm font-medium text-gray-700 mb-1">
+                        <div className="space-y-2">
+                            <h2 className="block text-sm font-medium text-gray-700">
                                 Skills Required for Position
-                            </label>
+                            </h2>
                             {skills.map((skill) => (
                             <div
                                 key={skill.skill_id}
-                                className="flex flex-col md:flex-row md:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="flex flex-col md:flex-row md:items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                             >
-                                <label>
-                                    <input type="checkbox" className="mr-1" />
+                                <label htmlFor={skill.skill_id} className="text-sm font-medium text-gray-700">
+                                    <input
+                                        type="checkbox"
+                                        id={skill.skill_id}
+                                        name={skill.name}
+                                        value={skill.skill_id}
+                                        checked={selectedSkills.includes(skill.skill_id)}
+                                        onChange={() => handleCheckboxChange(skill.skill_id)}
+                                        className="mr-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
+                                    />
                                     {skill.name}
                                 </label>
                             </div>
