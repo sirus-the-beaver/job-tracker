@@ -20,16 +20,23 @@ router.get('/', async (req, res) => {
         const jobs = await db.query('SELECT * FROM jobs WHERE user_id = ?', [user_id]);
         // Fetch skills associated with the jobs for the user
         const jobsSkills = await db.query('SELECT * FROM jobs_skills WHERE job_id IN (SELECT job_id FROM jobs WHERE user_id = ?)', [user_id]);
+        const jobsSkillsNames = await db.query('SELECT skill_id, name FROM skills WHERE skill_id IN (SELECT skill_id FROM jobs_skills WHERE job_id IN (SELECT job_id FROM jobs WHERE user_id = ?))', [user_id]);
         // Combine jobs with their associated skills
-        if (jobsSkills[0].length === 0) {
-            for (const job of jobs[0]) {
-                job.skills = jobsSkills[0].filter(skill => skill.job_id === job.job_id).map(skill => ({
-                    skill_id: skill.skill_id,
-                    proficiency_required: skill.proficiency_required
-                }));
-            }
+        if (jobs[0].length === 0) {
+            return res.status(404).send('No jobs found');
         }
-        res.status(200).send(jobs[0]);
+        const data = jobs[0].map(job => {
+            const skills = jobsSkills[0].filter(skill => skill.job_id === job.job_id).map(skill => ({
+                skill_id: skill.skill_id,
+                proficiency_required: skill.proficiency_required === null ? 'unknown' : skill.proficiency_required,
+                skill_name: jobsSkillsNames[0].find(s => s.skill_id === skill.skill_id).name
+            }));
+            return {
+                ...job,
+                skills: skills
+            };
+        });
+        res.status(200).send(data);
     } catch (err) {
         console.error('Error getting jobs:', err);
         res.status(500).send('Query error');
@@ -43,13 +50,14 @@ router.get('/:job_id', async (req, res) => {
     try {
         const job = await db.query('SELECT * FROM jobs WHERE job_id = ? AND user_id = ?', [job_id, user_id]);
         const jobsSkills = await db.query('SELECT * FROM jobs_skills WHERE job_id = ?', [job_id]);
-        // Combine job with its associated skills
-        if (jobsSkills[0].length > 0) {
-            job[0][0].skills = jobsSkills[0].map(skill => ({
-                skill_id: skill.skill_id,
-                proficiency_required: skill.proficiency_required
-            }));
+        if (job[0].length === 0) {
+            return res.status(404).send('Job not found');
         }
+        const skills = jobsSkills[0].map(skill => ({
+            skill_id: skill.skill_id,
+            proficiency_required: skill.proficiency_required === null ? 'unknown' : skill.proficiency_required
+        }));
+        job[0][0].skills = skills;
         res.status(200).send(job[0][0]);
     } catch (err) {
         console.error('Error getting job by ID:', err);
@@ -134,7 +142,7 @@ router.delete('/:job_id', async (req, res) => {
     try {
         await db.query('DELETE FROM jobs WHERE job_id = ?', [job_id]);
         await db.query('DELETE FROM jobs_skills WHERE job_id = ?', [job_id]);
-        res.send(204).send('Delete succeeded');
+        res.status(204).send('Delete succeeded');
     } catch (err) {
         console.error('Error while deleting job:', err);
         res.status(500).send('Delete failed');
