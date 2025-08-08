@@ -69,10 +69,8 @@ const NewJob = () => {
             application_date: dateApplied || null,
             notes: notes || null,
             link: link || null,
-            skills: selectedSkills.map(skillId => ({ skill_id: skillId }))
+            skills: selectedSkills
         };
-
-        console.log('Submitting job data:', jobData);
         try {
             const response = await axios.post('http://localhost:5045/jobs', jobData, {
                 headers: {
