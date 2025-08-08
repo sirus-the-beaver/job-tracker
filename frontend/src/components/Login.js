@@ -40,7 +40,14 @@ const Login = () => {
         setUser('');
         setPwd('');
         setSuccess(true);
-        auth.login({ email: user, password: pwd })
+        const response = await auth.login({ email: user, password: pwd });
+        if (response.success) {
+                navigate('/');
+        } else {
+            setErrMsg(response.message);
+            errRef.current.focus();
+            setSuccess(false);
+        }
     };
 
     const togglePasswordVisibility = () => {
@@ -126,9 +133,6 @@ const Login = () => {
                         >
                             <FontAwesomeIcon icon={faUserPlus} className="mr-1" /> Sign Up
                         </button>
-                    </p>
-                    <p className="mt-3 text-sm">
-                        <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">Forgot your password?</a>
                     </p>
                 </div>
             </div>

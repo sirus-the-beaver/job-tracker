@@ -59,14 +59,13 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5008/user/register',
+            const response = await axios.post('http://localhost:5045/user/register',
                 { email: user, password: pwd }, 
                 {
                     headers: { 'Content-Type': 'application/json' }
                 }
             );
             setSuccess(true);
-            setUser('');
             setPwd('');
             setMatchPwd('');
         } catch (err) {
