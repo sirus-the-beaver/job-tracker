@@ -85,9 +85,9 @@ const ViewJobs = () => {
                                 { job.link && (
                                     <p><strong>Link:</strong> {job.link}</p>
                                 )}
-                                {job.skills && job.skills.length > 0 && (
+                                {job.skills.length > 0 && (
                                     <div>
-                                        <strong>Skills:</strong>
+                                        <strong>Skills Required:</strong>
                                         <ul className="list-disc pl-5">
                                             {job.skills.map(skill => (
                                                 <li key={skill.skill_id}>
