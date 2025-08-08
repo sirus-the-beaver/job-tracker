@@ -78,18 +78,6 @@ const SkillFluency = () => {
                   </ResponsiveContainer>
                 </div>
 
-                {/* Skill Details */}
-                <div className="space-y-4">
-                  {skills.map(skill => (
-                    <div key={skill.skill_id} className="bg-gray-100 p-4 rounded-lg shadow">
-                      <h2 className="text-xl font-semibold">{skill.name}</h2>
-                      {skill.description && <p className="text-gray-600">{skill.description}</p>}
-                      <p><strong>Proficiency:</strong> {skill.proficiency}</p>
-                      <p><strong>Confidence:</strong> {skill.confidence_score}</p>
-                      <p><strong>Last Practiced:</strong> {skill.last_practiced ? new Date(skill.last_practiced).toLocaleDateString() : 'N/A'}</p>
-                    </div>
-                  ))}
-                </div>
               </>
             )}
           </>
