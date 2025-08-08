@@ -41,7 +41,7 @@ router.get('/:skill_id', async (req, res) => {
 });
 
 // GET how frequently certain skills are noted within job applications
-router.get('/skill-frequency/:user_id', async (req, res) => {
+router.get('/skill-frequency', async (req, res) => {
     const user_id = req.user.user_id;
     try {
         // This tells you how "in-demand" each skill is across all job applications
@@ -54,7 +54,7 @@ router.get('/skill-frequency/:user_id', async (req, res) => {
 });
 
 // GET how comfortable users are with those skills / if they need to work on those skills more
-router.get('/skill-comfort/:user_id', async (req, res) => {
+router.get('/skill-comfort', async (req, res) => {
     const user_id = req.user.user_id;
     try {
         // This identifies skills the user should work on
