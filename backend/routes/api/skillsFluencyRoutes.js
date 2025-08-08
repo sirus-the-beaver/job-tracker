@@ -28,18 +28,4 @@ router.get('/skill-comfort', async (req, res) => {
     }
 });
 
-// GET skill gap report
-router.get('/skill-gap/:job_id', async (req, res) => {
-    const user_id = req.user.user_id;
-    const job_id = req.params.job_id;
-    try {
-        // This can help user's visualize what skills they don't match well with for a given job
-        const skillGapQuery = await db.query("SELECT s.name AS skill_name, js.proficiency_required, us.proficiency AS user_proficiency, us.confidence_score FROM jobs_skills js JOIN skills s ON js.skill_id = s.skill_id LEFT JOIN users_skills us ON s.skill_id = us.skill_id AND us.user_id = ? WHERE js.job_id = ? ORDER BY FIELD(js.proficiency_required, 'expert', 'advanced', 'intermediate', 'beginner')", [user_id, job_id]);
-        res.send(skillGapQuery);
-    } catch (err) {
-        console.error('Error fetching skill gaps:', err);
-        res.status(500).send('Error fetching skill gap');
-    }
-});
-
 module.exports = router;
