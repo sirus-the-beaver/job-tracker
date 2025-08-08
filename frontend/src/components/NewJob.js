@@ -33,16 +33,6 @@ const NewJob = () => {
         return regex.test(input) || input === '';
     }
 
-    const handleCheckboxChange = (skillId) => {
-        setSelectedSkills((prevSelected) => {
-            if (prevSelected.includes(skillId)) {
-                return prevSelected.filter(id => id !== skillId);
-            } else {
-                return [...prevSelected, skillId];
-            }
-        });
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!positionTitle || !company) {
@@ -339,12 +329,71 @@ const NewJob = () => {
                                         id={skill.skill_id}
                                         name={skill.name}
                                         value={skill.skill_id}
-                                        checked={selectedSkills.includes(skill.skill_id)}
-                                        onChange={() => handleCheckboxChange(skill.skill_id)}
+                                        onChange={(e) => {setSelectedSkills(prev => [...prev, e.target.checked ? {skill_id: e.target.value} : prev.filter(skill => skill.skill_id !== e.target.value)])}}
                                         className="mr-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
                                     />
                                     {skill.name}
                                 </label>
+                                {selectedSkills.some(s => s.skill_id == skill.skill_id) && (
+                                    <div className="flex flex-col items-start justify-center ml-4">
+                                        <span className="text-sm text-gray-600">Proficiency required for position</span>
+                                        <div className="flex items-center justify-start mt-1">                              
+                                            <input
+                                                type="radio"
+                                                id="beginner"
+                                                name={`${skill.name}-proficiency`}
+                                                value="beginner"
+                                                onChange={(e) => {setSelectedSkills(prev => prev.map(s => s.skill_id == skill.skill_id ? {...s, proficiency_required: e.target.value} : s))}}
+                                                className="ml-4 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
+                                            />
+                                            <label htmlFor="beginner" className="ml-1 text-sm text-gray-600">Beginner</label>
+                                        </div>
+                                        <div className="flex items-center mt-1">
+                                            <input
+                                                type="radio"
+                                                id="intermediate"
+                                                name={`${skill.name}-proficiency`}
+                                                value="intermediate"
+                                                onChange={(e) => {setSelectedSkills(prev => prev.map(s => s.skill_id == skill.skill_id ? {...s, proficiency_required: e.target.value} : s))}}
+                                                className="ml-4 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
+                                            />
+                                            <label htmlFor="intermediate" className="ml-1 text-sm text-gray-600">Intermediate</label>
+                                        </div>
+                                        <div className="flex items-center mt-1">
+                                            <input
+                                                type="radio"
+                                                id="advanced"
+                                                name={`${skill.name}-proficiency`}
+                                                value="advanced"
+                                                onChange={(e) => {setSelectedSkills(prev => prev.map(s => s.skill_id == skill.skill_id ? {...s, proficiency_required: e.target.value} : s))}}
+                                                className="ml-4 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
+                                            />
+                                            <label htmlFor="advanced" className="ml-1 text-sm text-gray-600">Advanced</label>
+                                        </div>
+                                        <div className="flex items-center mt-1">
+                                            <input
+                                                type="radio"
+                                                id="expert"
+                                                name={`${skill.name}-proficiency`}
+                                                value="expert"
+                                                onChange={(e) => {setSelectedSkills(prev => prev.map(s => s.skill_id == skill.skill_id ? {...s, proficiency_required: e.target.value} : s))}}
+                                                className="ml-4 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
+                                            />
+                                            <label htmlFor="expert" className="ml-1 text-sm text-gray-600">Expert</label>
+                                        </div>
+                                        <div className="flex items-center mt-1">
+                                            <input
+                                                type="radio"
+                                                id="unknown"
+                                                name={`${skill.name}-proficiency`}
+                                                value="unknown"
+                                                onChange={(e) => {setSelectedSkills(prev => prev.map(s => s.skill_id == skill.skill_id ? {...s, proficiency_required: e.target.value} : s))}}
+                                                className="ml-4 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 transition"
+                                            />
+                                            <label htmlFor="unknown" className="ml-1 text-sm text-gray-600">Unknown</label>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                             ))}
                             <div className="flex justify-center gap-2">
