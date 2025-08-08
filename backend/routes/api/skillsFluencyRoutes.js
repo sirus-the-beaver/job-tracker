@@ -6,16 +6,6 @@ const skillsRoutes = require('./routes/api/skillsRoutes');
 
 // TO_DO: see https://github.com/sirus-the-beaver/job-tracker/pull/22#discussion_r2255822975
 
-// Track skill fluency: Allow users to track how comfortable they are with skills 
-// and if they need to improve certain skills
-
-// Per Sirus: "Make use of the JOIN clause to join data from skills, users_skills, and jobs_skills"
-
-// “Allows them to track which jobs require which skills, see how 
-// frequently certain skills are noted within applications, and track 
-// how comfortable they are with those skills/if they need to work on 
-// those skills more (ex: 'Docker is noted in 60% of your applications')”
-
 // GET a specific resource (e.g., get all of the skills a user has added to their skill list)
 // GET route should basically return all of the skills that a user has added to their skill list
 router.get('/:skill_id', async (req, res) => {
@@ -50,6 +40,42 @@ router.get('/:skill_id', async (req, res) => {
     } catch (err) {
         console.error('Error fetching job skill:', err);
         res.status(500).send('Error fetching job skill');
+    }
+});
+
+// GET how frequently certain skills are noted within job applications
+router.get('/:skill_id', async (req, res) => {
+    try {
+        // This tells you how "in-demand" each skill is across all job applications
+        const skillFrequencyQuery = await db.query('SELECT s.skill_id, s.name AS skill_name, COUNT(js.job_id) AS frequency_in_applications FROM skills s JOIN jobs_skills js ON s.skill_id = js.skill_id GROUP BY s.skill_id, s.name ORDER BY frequency_in_applications DESC;');
+        res.send(skillFrequencyQuery);
+    } catch (err) {
+        console.error('Error fetching skill frequencies:', err);
+        res.status(500).send('Error fetching skill frequency');
+    }
+});
+
+// GET how comfortable users are with those skills / if they need to work on those skills more
+router.get('/:skill_id', async (req, res) => {
+    try {
+        // This identifies skills the user should work on
+        const skillComfortQuery = await db.query('SELECT s.skill_id, s.name AS skill_name, us.proficiency, us.confidence_score, us.last_practiced FROM users_skills us JOIN skills s ON us.skill_id = s.skill_id WHERE us.user_id = ? AND (us.confidence_score <5 OR us.last_practiced < CURDATE() - INTERVAL 30 DAY) ORDER BY us.confidence_score ASC');
+        res.send(skillComfortQuery);
+    } catch (err) {
+        console.error('Error fetching skills to work on:', err);
+        res.status(500).send('Error fetching skill to work on');
+    }
+});
+
+// GET skill gap report
+router.get('/:skill_id', async (req, res) => {
+    try {
+        // This can help user's visualize what skills they don't match well with for a given job
+        const skillGapQuery = await db.query('SELECT s.name AS skill_name, js.proficiency_required, us.proficiency AS user_proficiency, us.confidence_score FROM jobs_skills js JOIN skills s ON js.skill_id = s.skill_id LEFT JOIN users_skills us ON s.skill_id = us.skill_id AND us.user_id = ? WHERE js.job_id = ? ORDER BY FIELD(js.proficiency_required, "expert", "advanced", "intermediate", "beginner"');
+        res.send(skillGapQuery);
+    } catch (err) {
+        console.error('Error fetching skill gaps:', err);
+        res.status(500).send('Error fetching skill gap');
     }
 });
 
