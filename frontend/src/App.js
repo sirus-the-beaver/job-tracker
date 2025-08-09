@@ -51,6 +51,7 @@ function App() {
 
           {/* Skills */}
           <Route path="/new-skill" element={<NewSkill />} />
+          <Route path="/skillFluency" element={<SkillFluency />} />
           <Route path="/edit-skill/:skillId" element={<EditSkill />} />
 
             {/* Contacts */}
