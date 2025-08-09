@@ -77,7 +77,7 @@ const EditContact = () => {
             notes
         };
         try {
-            const response = await axios.put(`http://localhost:5045/contacts/${contactId}`, contactData, {
+            const response = await axios.put(`https://job-tracker-backend-mu.vercel.app/contacts/${contactId}`, contactData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -101,7 +101,7 @@ const EditContact = () => {
     useEffect(() => {
         const fetchContact = async () => {
             try {
-                const response = await axios.get(`http://localhost:5045/contacts/${contactId}`, {
+                const response = await axios.get(`https://job-tracker-backend-mu.vercel.app/contacts/${contactId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

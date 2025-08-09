@@ -39,7 +39,7 @@ const NewSkill = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await axios.get('http://localhost:5045/skills', {
+        const response = await axios.get('https://job-tracker-backend-mu.vercel.app/skills', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -57,7 +57,7 @@ const NewSkill = () => {
 
   const handleDeleteSkill = async (skillId) => {
     try {
-      await axios.delete(`http://localhost:5045/skills/${skillId}`, {
+      await axios.delete(`https://job-tracker-backend-mu.vercel.app/skills/${skillId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -121,7 +121,7 @@ const NewSkill = () => {
         last_practiced
       };
       try {
-        const response = await axios.post('http://localhost:5045/skills', newSkill, {
+        const response = await axios.post('https://job-tracker-backend-mu.vercel.app/skills', newSkill, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`

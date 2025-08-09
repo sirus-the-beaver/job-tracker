@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const login = async(data) => {
         try {
-            const req = await axios.post('http://localhost:5045/user/login', data, {
+            const req = await axios.post('https://job-tracker-backend-mu.vercel.app/user/login', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -54,7 +54,7 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const refreshTokenHandler = async () => {
             try {
-                const req = await axios.post('http://localhost:5045/user/refresh-token', { refreshToken }, {
+                const req = await axios.post('https://job-tracker-backend-mu.vercel.app/user/refresh-token', { refreshToken }, {
                     headers: {
                         'Content-Type': 'application/json',
                     },

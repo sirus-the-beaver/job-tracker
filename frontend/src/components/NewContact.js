@@ -85,7 +85,7 @@ const NewContact = () => {
         };
         
         try {
-            const response = await axios.post('http://localhost:5045/contacts', newContact, {
+            const response = await axios.post('https://job-tracker-backend-mu.vercel.app/contacts', newContact, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`

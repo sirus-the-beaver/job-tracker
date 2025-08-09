@@ -73,7 +73,7 @@ const NewJob = () => {
             link: link || null
         };
         try {
-            const response = await axios.post('http://localhost:5045/jobs', jobData, {
+            const response = await axios.post('https://job-tracker-backend-mu.vercel.app/jobs', jobData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -114,7 +114,7 @@ const NewJob = () => {
     useEffect(() => {
         const fetchSkills = async () => {
             try {
-                const response = await axios.get('http://localhost:5045/skills', {
+                const response = await axios.get('https://job-tracker-backend-mu.vercel.app/skills', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

@@ -65,7 +65,7 @@ const EditJob = () => {
         };
 
         try {
-            const response = await axios.put(`http://localhost:5045/jobs/${jobId}`, jobData,
+            const response = await axios.put(`https://job-tracker-backend-mu.vercel.app/jobs/${jobId}`, jobData,
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
@@ -85,7 +85,7 @@ const EditJob = () => {
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const response = await axios.get(`http://localhost:5045/jobs/${jobId}`, {
+                const response = await axios.get(`https://job-tracker-backend-mu.vercel.app/jobs/${jobId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const job = response.data;

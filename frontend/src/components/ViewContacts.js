@@ -25,7 +25,7 @@ const ViewContacts = () => {
     useEffect(() => {
         const fetchContacts = async () => {
             try {
-                const response = await axios.get('http://localhost:5045/contacts', {
+                const response = await axios.get('https://job-tracker-backend-mu.vercel.app/contacts', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -44,7 +44,7 @@ const ViewContacts = () => {
 
     const handleDeleteContact = async (contactId) => {
         try {
-            await axios.delete(`http://localhost:5045/contacts/${contactId}`, {
+            await axios.delete(`https://job-tracker-backend-mu.vercel.app/contacts/${contactId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -35,7 +35,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('http://localhost:5045/jobs', {
+        const response = await axios.get('https://job-tracker-backend-mu.vercel.app/jobs', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
