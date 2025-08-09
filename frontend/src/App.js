@@ -25,6 +25,7 @@ import EditJob from './components/EditJob';
 import EditSkill from './components/EditSkill';
 import ViewContacts from './components/ViewContacts';
 import EditContact from './components/EditContact';
+import Layout from './components/Layout';
 import SkillFluency from './components/skillFluency';
 
 
@@ -38,22 +39,25 @@ function App() {
         
         {/* Add private routes here */}
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route element={<Layout />}>
 
-          {/* Jobs */}
-          <Route path="/new-job" element={<NewJob />} />
-          <Route path="/view-jobs" element={<ViewJobs />} />
-          <Route path="/edit-job/:jobId" element={<EditJob />} />
+            {/* Dashboard */}
+            <Route path="/" element={<Dashboard />} />
+
+            {/* Jobs */}
+            <Route path="/new-job" element={<NewJob />} />
+            <Route path="/view-jobs" element={<ViewJobs />} />
+            <Route path="/edit-job/:jobId" element={<EditJob />} />
 
           {/* Skills */}
           <Route path="/new-skill" element={<NewSkill />} />
-          <Route path="/skillFluency" element={<SkillFluency />} />
           <Route path="/edit-skill/:skillId" element={<EditSkill />} />
 
-          {/* Contacts */}
-          <Route path="/new-contact" element={<NewContact />} />
-          <Route path="/view-contacts" element={<ViewContacts />} />
-          <Route path="/edit-contact/:contactId" element={<EditContact />} />
+            {/* Contacts */}
+            <Route path="/new-contact" element={<NewContact />} />
+            <Route path="/view-contacts" element={<ViewContacts />} />
+            <Route path="/edit-contact/:contactId" element={<EditContact />} />
+          </Route>
         </Route>
       </Routes>
     </AuthProvider>

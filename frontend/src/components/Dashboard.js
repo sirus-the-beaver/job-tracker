@@ -6,12 +6,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBriefcase, faChartLine, faSignOutAlt, faPlus, faCheckCircle, faClock, faSearch, faBuilding, faHouse, faAddressBook, faCode } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../contexts/AuthContext';
+import { faCheckCircle, faClock, faClipboardQuestion, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
   const token = localStorage.getItem('token');
 
   const [jobs, setJobs] = useState([]);
@@ -61,41 +59,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faBriefcase} className="h-7 w-7 text-blue-600" />
-              <h1 className="text-xl font-bold text-gray-800">JobTracker</h1>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="relative hidden md:block">
-                <input
-                  type="text"
-                  placeholder="Search jobs..."
-                  className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64"
-                />
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-gray-700 hidden md:inline-block">
-                  {user?.email || user?.name}
-                </span>
-                <button 
-                  onClick={logout}
-                  className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-                  aria-label="Logout"
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Navigation */}
@@ -140,14 +103,6 @@ const Dashboard = () => {
                       className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
                     >
                       Add New Skill
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/skillFluency"
-                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
-                    >
-                      View Skill Fluency
                     </a>
                   </li>
                 </ul>
@@ -195,7 +150,7 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalApplications}</h3>
                   </div>
                   <div className="p-3 bg-blue-50 rounded-full">
-                    <FontAwesomeIcon icon={faBriefcase} className="h-6 w-6 text-blue-600" />
+                    <FontAwesomeIcon icon={faPaperPlane} className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
               </div>
@@ -207,7 +162,7 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">{interviews}</h3>
                   </div>
                   <div className="p-3 bg-purple-50 rounded-full">
-                    <FontAwesomeIcon icon={faBriefcase} className="h-6 w-6 text-purple-600" />
+                    <FontAwesomeIcon icon={faClipboardQuestion} className="h-6 w-6 text-purple-600" />
                   </div>
                 </div>
               </div>

@@ -5,6 +5,7 @@ const contactsRoutes = require('./routes/api/contactsRoutes');
 const jobsRoute = require('./routes/api/jobsRoutes');
 const userRoutes = require('./routes/api/userRoutes');
 const skillsRoutes = require('./routes/api/skillsRoutes');
+const skillsFluencyRoutes = require('./routes/api/skillsFluencyRoutes');
 const authMiddleware = require('./middlewares/authMiddleware');
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/user', userRoutes);
 app.use('/jobs', authMiddleware, jobsRoute);
 app.use('/contacts', authMiddleware, contactsRoutes);
 app.use('/skills', authMiddleware, skillsRoutes);
+app.use('/skillFluency', authMiddleware, skillsFluencyRoutes);
 
 
 app.listen(PORT, function () {
