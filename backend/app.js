@@ -12,8 +12,14 @@ const app = express();
 dotenv.config()
 const PORT = process.env.PORT;
 
-// TO_DO: Will need to configure CORS for specific origins in production
-app.use(cors());
+app.use(cors(
+    {
+        origin: 'https://job-tracker-steel-kappa.vercel.app',           
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true
+    }
+));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
