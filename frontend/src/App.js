@@ -26,6 +26,8 @@ import EditSkill from './components/EditSkill';
 import ViewContacts from './components/ViewContacts';
 import EditContact from './components/EditContact';
 import Layout from './components/Layout';
+import SkillFluency from './components/skillFluency';
+
 
 
 function App() {
@@ -47,9 +49,10 @@ function App() {
             <Route path="/view-jobs" element={<ViewJobs />} />
             <Route path="/edit-job/:jobId" element={<EditJob />} />
 
-            {/* Skills */}
-            <Route path="/new-skill" element={<NewSkill />} />
-            <Route path="/edit-skill/:skillId" element={<EditSkill />} />
+          {/* Skills */}
+          <Route path="/new-skill" element={<NewSkill />} />
+          <Route path="/skillFluency" element={<SkillFluency />} />
+          <Route path="/edit-skill/:skillId" element={<EditSkill />} />
 
             {/* Contacts */}
             <Route path="/new-contact" element={<NewContact />} />
