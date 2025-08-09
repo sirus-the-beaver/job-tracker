@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const NewContact = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -74,7 +85,7 @@ const NewContact = () => {
         };
         
         try {
-            const response = await axios.post('http://localhost:5045/contacts', newContact, {
+            const response = await axios.post('https://job-tracker-backend-mu.vercel.app/contacts', newContact, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`

@@ -5,7 +5,18 @@ import axios from 'axios';
 const EditJob = () => {
     const navigate = useNavigate();
     const { jobId } = useParams();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const classifications = ['Job', 'Internship'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];
@@ -54,7 +65,7 @@ const EditJob = () => {
         };
 
         try {
-            const response = await axios.put(`http://localhost:5045/jobs/${jobId}`, jobData,
+            const response = await axios.put(`https://job-tracker-backend-mu.vercel.app/jobs/${jobId}`, jobData,
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
@@ -74,7 +85,7 @@ const EditJob = () => {
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const response = await axios.get(`http://localhost:5045/jobs/${jobId}`, {
+                const response = await axios.get(`https://job-tracker-backend-mu.vercel.app/jobs/${jobId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const job = response.data;

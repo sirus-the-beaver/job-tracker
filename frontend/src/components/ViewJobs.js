@@ -9,12 +9,23 @@ const ViewJobs = () => {
     const [jobs, setJobs] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await axios.get('http://localhost:5045/jobs', {
+                const response = await axios.get('https://job-tracker-backend-mu.vercel.app/jobs', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -33,7 +44,7 @@ const ViewJobs = () => {
 
     const handleDeleteJob = async (jobId) => {
         try {
-            await axios.delete(`http://localhost:5045/jobs/${jobId}`, {
+            await axios.delete(`https://job-tracker-backend-mu.vercel.app/jobs/${jobId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -26,7 +26,18 @@ const NewJob = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const validateInput = (input) => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;
@@ -62,7 +73,7 @@ const NewJob = () => {
             skills: selectedSkills
         };
         try {
-            const response = await axios.post('http://localhost:5045/jobs', jobData, {
+            const response = await axios.post('https://job-tracker-backend-mu.vercel.app/jobs', jobData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -103,7 +114,7 @@ const NewJob = () => {
     useEffect(() => {
         const fetchSkills = async () => {
             try {
-                const response = await axios.get('http://localhost:5045/skills', {
+                const response = await axios.get('https://job-tracker-backend-mu.vercel.app/skills', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

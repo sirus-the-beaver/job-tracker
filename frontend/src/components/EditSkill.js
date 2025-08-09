@@ -10,7 +10,18 @@ const VALIDATION_PATTERNS = {
 const EditSkill = () => {
     const navigate = useNavigate();
     const { skillId } = useParams();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const [skillName, setSkillName] = useState('');
     const [proficiency, setProficiency] = useState('Beginner');
@@ -68,7 +79,7 @@ const EditSkill = () => {
             last_practiced
         };
         try {
-            const response = await axios.put(`http://localhost:5045/skills/${skillId}`, skillData, {
+            const response = await axios.put(`https://job-tracker-backend-mu.vercel.app/skills/${skillId}`, skillData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
@@ -95,7 +106,7 @@ const EditSkill = () => {
     useEffect(() => {
         const fetchSkill = async () => {
             try {
-                const response = await axios.get(`http://localhost:5045/skills/${skillId}`, {
+                const response = await axios.get(`https://job-tracker-backend-mu.vercel.app/skills/${skillId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
