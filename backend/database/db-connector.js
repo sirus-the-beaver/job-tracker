@@ -13,8 +13,8 @@ const pool = mysql.createPool({
     database          : `${process.env.DB_NAME}`,
     port              : `${process.env.DB_PORT}`,
     ssl               : {
-        ca: fs.readFileSync(`${__dirname}/ca.pem`),
-        rejectUnauthorized: true
+        ca: `${process.env.CA_CERTIFICATE}`,
+        rejectUnauthorized: false
     }
 }).promise(); // This makes it so we can use async / await rather than callbacks
 
