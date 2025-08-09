@@ -7,65 +7,112 @@ import {
 const SkillFluency = () => {
   // Add skillComfort state to match your table usage
   const [skills, setSkills] = useState([]);
-  const [skillComfort, setSkillComfort] = useState([]); // New state
+  const [skillComfort, setSkillComfort] = useState([]);
+  const [skillFrequency, setSkillFrequency] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-  const fetchSkills = async () => {
+  useEffect(() => {
+    const handleTokenChange = () => {
+      setToken(localStorage.getItem('token'));
+    };
+    window.addEventListener('storage', handleTokenChange);
+    return () => {
+      window.removeEventListener('storage', handleTokenChange);
+    };
+  }, []);
+
+  const fetchSkillFrequency = async () => {
     try {
       setLoading(true);
-      // Fetch main skills data (adjust URL if needed)
-      const skillsResponse = await axios.get('http://localhost:5045/skills', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      // Fetch skill frequency data
+      const frequencyResponse = await axios.get('https://job-tracker-backend-mu.vercel.app/skillFluency/skill-frequency', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-      setSkills(skillsResponse.data);
-
-      // Fetch skill comfort data (add this if using the /skill-comfort endpoint)
-      const comfortResponse = await axios.get('http://localhost:5045/skills', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
-      setSkillComfort(comfortResponse.data);
-
+      setSkillFrequency(frequencyResponse.data);
       setError(null);
     } catch (err) {
-      console.error('Error fetching skills:', err);
-      setError('Failed to load skills. Please try again later.');
+      console.error('Error fetching skill frequency:', err);
+      setError('Failed to load skill frequency. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSkills();
-  }, [token]); // Add token as a dependency (if it can change)
+    fetchSkillFrequency();
+  }, [token]);
 
-  // Define calculateAvgConfidence to use skillComfort
-  const calculateAvgConfidence = () => {
-    if (skillComfort.length === 0) return '0';
-    const total = skillComfort.reduce((sum, skill) => sum + skill.confidence_score, 0);
-    return (total / skillComfort.length).toFixed(2);
+  const fetchSkillComfort = async () => {
+    try {
+      setLoading(true);
+      // Fetch skill comfort data
+      const comfortResponse = await axios.get('https://job-tracker-backend-mu.vercel.app/skillFluency/skill-comfort', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setSkillComfort(comfortResponse.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching skill comfort:', err);
+      setError('Failed to load skill comfort. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const calculateStats = () => {
-    const total = skills.length;
-    if (total === 0) return null;
+  useEffect(() => {
+    fetchSkillComfort();
+  }, [token]);
 
-    const avgConfidence = (skills.reduce((sum, s) => sum + s.confidence_score, 0) / total).toFixed(2);
-    return { avgConfidence };
-  };
+  // const fetchSkills = async () => {
+  //   try {
+  //     setLoading(true);
+  //     // Fetch main skills data (adjust URL if needed)
+  //     const skillsResponse = await axios.get('https://job-tracker-backend-mu.vercel.app/skills', {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     });
+  //     setSkills(skillsResponse.data);
+  //     setError(null);
+  //   } catch (err) {
+  //     console.error('Error fetching skills:', err);
+  //     setError('Failed to load skills. Please try again later.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const stats = calculateStats();
+  // useEffect(() => {
+  //   fetchSkills();
+  // }, [token]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {error && (
+        <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
+          <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
+              <h2 className='text-lg font-semibold text-red-600'>Error fetching skills fluency data</h2>
+              <p className='text-sm text-gray-700'>{error}</p>
+              <button
+                  onClick={() => setError('')}
+                  className='mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition'
+              >
+                  Dismiss
+              </button>
+          </div>
+        </div>
+      )}
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full mx-auto fade-in">
         <h1 className="text-2xl font-bold mb-6 text-center">Skills Fluency</h1>
 
         {loading ? (
           <p>Loading skills...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
         ) : (
           <>
             {skills.length === 0 && skillComfort.length === 0 ? (
