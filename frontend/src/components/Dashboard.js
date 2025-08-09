@@ -10,7 +10,6 @@ import { faCheckCircle, faClock, faClipboardQuestion, faPaperPlane } from '@fort
 import axios from 'axios';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
