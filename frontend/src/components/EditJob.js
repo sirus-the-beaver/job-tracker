@@ -5,7 +5,18 @@ import axios from 'axios';
 const EditJob = () => {
     const navigate = useNavigate();
     const { jobId } = useParams();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const classifications = ['Job', 'Internship'];
     const statuses = ['Interested', 'Applied', 'Interviewing', 'Offer', 'Rejected'];

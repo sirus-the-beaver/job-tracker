@@ -10,7 +10,7 @@ import { useAuth } from './AuthContext';
 const PrivateRoute = () => {
     const user = useAuth();
     // If user is not authenticated, redirect to login page
-    if (!user.token) return <Navigate to="/login" />;
+    if (!user || !user.token) return <Navigate to="/login" replace />;
     // If user is authenticated, render the child components
     return <Outlet />;
 };

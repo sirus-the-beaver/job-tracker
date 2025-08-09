@@ -5,7 +5,18 @@ import axios from 'axios';
 const EditContact = () => {
     const navigate = useNavigate();
     const { contactId } = useParams();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

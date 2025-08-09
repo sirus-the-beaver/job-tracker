@@ -76,7 +76,7 @@ const AuthProvider = ({ children }) => {
             if (refreshToken) {
                 refreshTokenHandler();
             }
-        }, 59 * 60 * 1000); // Refresh every 59 minutes
+        }, 30 * 60 * 1000); // Refresh every 30 minutes
 
         const refreshTokenExiry = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
         const refreshTokenTimeout = setTimeout(() => {

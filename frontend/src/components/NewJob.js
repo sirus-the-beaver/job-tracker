@@ -27,7 +27,18 @@ const NewJob = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const [token, setToken] = useState(localStorage.getItem('token'));
+
+    useEffect(() => {
+      const handleTokenChange = () => {
+        setToken(localStorage.getItem('token'));
+      };
+      window.addEventListener('storage', handleTokenChange);
+  
+      return () => {
+        window.removeEventListener('storage', handleTokenChange);
+      };
+    }, []);
 
     const validateInput = (input) => {
         const regex = /^[a-zA-Z0-9\s,.'-]+$/;

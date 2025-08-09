@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faTrashAlt, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -11,8 +11,19 @@ const VALIDATION_PATTERNS = {
 
 
 const NewSkill = () => {
-  const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+  useEffect(() => {
+    const handleTokenChange = () => {
+      setToken(localStorage.getItem('token'));
+    };
+    window.addEventListener('storage', handleTokenChange);
+
+    return () => {
+      window.removeEventListener('storage', handleTokenChange);
+    };
+  }, []);
 
   const [skills, setSkills] = useState([]);
   const [skillName, setSkillName] = useState('');
