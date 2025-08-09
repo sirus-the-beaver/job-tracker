@@ -32,3 +32,5 @@ app.listen(PORT, function () {
             '; press Ctrl-C to terminate.'
     );
 });
+
+module.exports = app;
