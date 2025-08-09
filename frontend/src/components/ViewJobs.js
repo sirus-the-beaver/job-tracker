@@ -85,6 +85,21 @@ const ViewJobs = () => {
                                 { job.link && (
                                     <p><strong>Link:</strong> {job.link}</p>
                                 )}
+                                {job.skills.length > 0 && (
+                                    <div>
+                                        <strong>Skills Required:</strong>
+                                        <ul className="list-disc pl-5">
+                                            {job.skills.map(skill => (
+                                                <li key={skill.skill_id}>
+                                                    {skill.skill_name}
+                                                    {skill.proficiency_required && (
+                                                        <span> (Proficiency Required: {skill.proficiency_required})</span>
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                                 <div className="flex justify-center mt-4">
                                     <button onClick={() => handleEditJob(job.job_id)} className="text-blue-500 hover:text-blue-100 hover:bg-blue-500 bg-blue-100">
                                         <FontAwesomeIcon icon={faPenToSquare} /> Edit

@@ -6,12 +6,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBriefcase, faChartLine, faSignOutAlt, faPlus, faCheckCircle, faClock, faSearch, faBuilding, faHouse, faAddressBook, faCode } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../contexts/AuthContext';
+import { faCheckCircle, faClock, faClipboardQuestion, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
   const token = localStorage.getItem('token');
 
   const [jobs, setJobs] = useState([]);
@@ -61,115 +59,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faBriefcase} className="h-7 w-7 text-blue-600" />
-              <h1 className="text-xl font-bold text-gray-800">JobTracker</h1>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="relative hidden md:block">
-                <input
-                  type="text"
-                  placeholder="Search jobs..."
-                  className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64"
-                />
-                <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-gray-700 hidden md:inline-block">
-                  {user?.email || user?.name}
-                </span>
-                <button 
-                  onClick={logout}
-                  className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-                  aria-label="Logout"
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar Navigation */}
-        <aside className="w-64 bg-white border-r border-gray-200 shadow-sm hidden md:block">
-          <nav className="p-4 space-y-1">
-            <a 
-              href="/" 
-              className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-700 text-white transition-colors"
-            >
-              <FontAwesomeIcon icon={faHouse} className="mr-3 h-5 w-5" />
-              Dashboard
-            </a>
-            <div className="flex flex-col items-start">
-              <div className="flex flex-col items-start">
-                <h2 className="text-xs font-semibold text-gray-500 uppercase mb-2 mt-4"><FontAwesomeIcon icon={faBuilding} /> Applications</h2>
-                <ul className="space-y-4 flex flex-col">
-                  <li>
-                    <a
-                      href="/new-job"
-                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
-                    >
-                      Add New Application
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/view-jobs"
-                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700" 
-                    >
-                      View Applications
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="flex flex-col items-start">
-                <h2 className="text-xs font-semibold text-gray-500 uppercase mb-2 mt-4"><FontAwesomeIcon icon={faCode} /> Skills</h2>
-                <ul className="space-y-4 flex flex-col">
-                  <li>
-                    <a
-                      href="/new-skill"
-                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
-                    >
-                      Add New Skill
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="flex flex-col items-start">
-                <h2 className="text-xs font-semibold text-gray-500 uppercase mb-2 mt-4"><FontAwesomeIcon icon={faAddressBook} /> Contacts</h2>
-                <ul className="space-y-4 flex flex-col">
-                  <li>
-                    <a
-                      href="/new-contact"
-                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
-                    >
-                      Add New Contact
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/view-contacts"
-                      className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
-                    >
-                      View Contacts
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </nav>
-        </aside>
-
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="max-w-7xl mx-auto">
@@ -187,7 +78,7 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">{totalApplications}</h3>
                   </div>
                   <div className="p-3 bg-blue-50 rounded-full">
-                    <FontAwesomeIcon icon={faBriefcase} className="h-6 w-6 text-blue-600" />
+                    <FontAwesomeIcon icon={faPaperPlane} className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
               </div>
@@ -199,7 +90,7 @@ const Dashboard = () => {
                     <h3 className="text-2xl font-bold text-gray-900 mt-1">{interviews}</h3>
                   </div>
                   <div className="p-3 bg-purple-50 rounded-full">
-                    <FontAwesomeIcon icon={faBriefcase} className="h-6 w-6 text-purple-600" />
+                    <FontAwesomeIcon icon={faClipboardQuestion} className="h-6 w-6 text-purple-600" />
                   </div>
                 </div>
               </div>

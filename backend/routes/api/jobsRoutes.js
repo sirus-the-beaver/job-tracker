@@ -18,7 +18,25 @@ router.get('/', async (req, res) => {
     const user_id = req.user.user_id;
     try {
         const jobs = await db.query('SELECT * FROM jobs WHERE user_id = ?', [user_id]);
-        res.send(jobs[0]);
+        // Fetch skills associated with the jobs for the user
+        const jobsSkills = await db.query('SELECT * FROM jobs_skills WHERE job_id IN (SELECT job_id FROM jobs WHERE user_id = ?)', [user_id]);
+        const jobsSkillsNames = await db.query('SELECT skill_id, name FROM skills WHERE skill_id IN (SELECT skill_id FROM jobs_skills WHERE job_id IN (SELECT job_id FROM jobs WHERE user_id = ?))', [user_id]);
+        // Combine jobs with their associated skills
+        if (jobs[0].length === 0) {
+            return res.status(404).send('No jobs found');
+        }
+        const data = jobs[0].map(job => {
+            const skills = jobsSkills[0].filter(skill => skill.job_id === job.job_id).map(skill => ({
+                skill_id: skill.skill_id,
+                proficiency_required: skill.proficiency_required === null ? 'unknown' : skill.proficiency_required,
+                skill_name: jobsSkillsNames[0].find(s => s.skill_id === skill.skill_id).name
+            }));
+            return {
+                ...job,
+                skills: skills
+            };
+        });
+        res.status(200).send(data);
     } catch (err) {
         console.error('Error getting jobs:', err);
         res.status(500).send('Query error');
@@ -31,6 +49,15 @@ router.get('/:job_id', async (req, res) => {
     const { job_id } = req.params;
     try {
         const job = await db.query('SELECT * FROM jobs WHERE job_id = ? AND user_id = ?', [job_id, user_id]);
+        const jobsSkills = await db.query('SELECT * FROM jobs_skills WHERE job_id = ?', [job_id]);
+        if (job[0].length === 0) {
+            return res.status(404).send('Job not found');
+        }
+        const skills = jobsSkills[0].map(skill => ({
+            skill_id: skill.skill_id,
+            proficiency_required: skill.proficiency_required === null ? 'unknown' : skill.proficiency_required
+        }));
+        job[0][0].skills = skills;
         res.status(200).send(job[0][0]);
     } catch (err) {
         console.error('Error getting job by ID:', err);
@@ -42,7 +69,7 @@ router.get('/:job_id', async (req, res) => {
 // POST route should receive data payload from frontend and store in DB
 router.post('/', async (req, res) => {
     const user_id = req.user.user_id;
-    const { positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link } = req.body;
+    const { positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link, skills } = req.body;
     try {
         await db.query('INSERT INTO jobs (user_id, positionTitle, company, city, state, status, salary_min, salary_max, application_date, notes, classification, tier, link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
             user_id,
@@ -59,6 +86,19 @@ router.post('/', async (req, res) => {
             tier || null,
             link || null,
         ]);
+        // Insert into jobs_skills
+        if (skills.length > 0) {
+            const job_id = (await db.query('SELECT LAST_INSERT_ID() AS job_id'))[0][0].job_id;
+            for (const skill of skills) {
+                const skill_id = skill.skill_id;
+                const profiency_required = skill.proficiency_required === 'unknown' ? null : skill.proficiency_required;
+                await db.query('INSERT INTO jobs_skills (job_id, skill_id, proficiency_required) VALUES (?, ?, ?)', [
+                    job_id,
+                    skill_id,
+                    profiency_required,
+                ]);
+            }
+        }
         res.status(201).send('Insert succeeded');
     } catch (err) {
         console.error('Error while adding a new job:', err);
@@ -101,7 +141,8 @@ router.delete('/:job_id', async (req, res) => {
     const { job_id } = req.params;
     try {
         await db.query('DELETE FROM jobs WHERE job_id = ?', [job_id]);
-        res.send(204).send('Delete succeeded');
+        await db.query('DELETE FROM jobs_skills WHERE job_id = ?', [job_id]);
+        res.status(204).send('Delete succeeded');
     } catch (err) {
         console.error('Error while deleting job:', err);
         res.status(500).send('Delete failed');
