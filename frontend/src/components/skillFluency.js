@@ -100,8 +100,11 @@ const SkillFluency = () => {
         ) : (
           <div>
               <div>
+                {skillFrequency.length === 0 ? (
+                  <p className="text-center text-gray-500">No skills found in your applications.</p>
+                ) :
                 {/* Pie chart: skill frequency */}
-                {skillFrequency.length > 0 && (
+                (
                   <div className="mb-10">
                     <h2 className="text-xl font-semibold mb-4 text-center underline">Frequency of each skill in your applications</h2>
                     <ResponsiveContainer width="100%" height={300}>
