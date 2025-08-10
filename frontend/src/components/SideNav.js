@@ -49,12 +49,12 @@ const SideNav = () => {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      href="/skillFluency"
+                    <Link
+                      to="/skillFluency"
                       className="px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors bg-blue-100 text-blue-700"
                     >
                       View Skill Fluency
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
