@@ -100,7 +100,7 @@ const SkillFluency = () => {
         ) : (
           <div>
               <div>
-                {skill.frequency.length === 0 ? (
+                {skillFrequency.length === 0 ? (
                   <p className="text-center text-gray-500">No skills found in your applications.</p>
                 ) :
                 {/* Pie chart: skill frequency */}
