@@ -77,11 +77,11 @@ const SkillFluency = () => {
   }, [token]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       {error && (
-        <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center'>
-          <div className='bg-white p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
-              <h2 className='text-lg font-semibold text-red-600'>Error fetching skills fluency data</h2>
+        <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4'>
+          <div className='bg-white p-4 sm:p-6 text-center space-y-4 rounded-xl shadow-xl max-w-sm w-full'>
+              <h2 className='text-base sm:text-lg font-semibold text-red-600'>Error fetching skills fluency data</h2>
               <p className='text-sm text-gray-700'>{error}</p>
               <button
                   onClick={() => setError('')}
@@ -92,22 +92,22 @@ const SkillFluency = () => {
           </div>
         </div>
       )}
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full mx-auto fade-in">
-        <h1 className="text-2xl font-bold mb-6 text-center">Skills Fluency Tracking</h1>
+      <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 w-full mx-auto fade-in">
+        <h1 className="text-xl sm:text-2xl font-bold mb-6 text-center">Skills Fluency Tracking</h1>
 
         {loading ? (
-          <p>Loading skills...</p>
+          <p className="text-center">Loading skills...</p>
         ) : (
           <div>
               <div>
                 {/* Pie chart: skill frequency */}
                 {skillFrequency.length === 0 ? (
-                  <p className="text-center text-gray-500">No skills found in your applications.</p>
+                  <p className="text-center text-gray-500">You don't have any skills linked to any of your saved applications.</p>
                 ) :
                 (
                   <div className="mb-10">
-                    <h2 className="text-xl font-semibold mb-4 text-center underline">Frequency of each skill in your applications</h2>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <h2 className="text-lg sm:text-xl font-semibold mb-4 text-center underline">Frequency of each skill in your applications</h2>
+                    <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie
                           data={pieChartData}
@@ -115,7 +115,7 @@ const SkillFluency = () => {
                           nameKey="name"
                           cx="50%"
                           cy="50%"
-                          outerRadius={100}
+                          outerRadius={90}
                           fill="#8884d8"
                           label
                         >
@@ -132,7 +132,22 @@ const SkillFluency = () => {
 
                 {/* Table: skill comfort */}
                 {skillComfort.length > 0 && (
-                  <div className="mb-10">
+                  <div className="space-y-4 sm:hidden">
+                    <h2 className="text-xl font-semibold mb-4 text-center underline">Skills that you should improve</h2>
+                    {skillComfort.map((skill) => (
+                      <div key={skill.skill_id} className="bg-white border p-4 rounded-lg shadow-sm">
+                        <p className="font-medium text-gray-900">
+                          {skill.skill_name}
+                        </p>
+                        <p className="text-sm text-gray-600">Proficiency: {skill.proficiency}</p>
+                        <p className="text-sm text-gray-600">Confidence Score: {skill.confidence_score}/10</p>
+                        <p className="text-sm text-gray-600">Last Practiced: {new Date(skill.last_practiced).toLocaleDateString()}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {skillComfort.length > 0 && (
+                  <div className="hidden sm:block overflow-x-auto">
                     <h2 className="text-xl font-semibold mb-4 text-center underline">Skills that you should improve</h2>
                     <div className="overflow-x-auto">
                       <table className="min-w-full border-collapse border border-gray-200">
